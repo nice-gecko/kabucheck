@@ -292,7 +292,7 @@ function PastRow({ post }: { post: Post }) {
   return (
     <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "7px 10px", background: ev.result === "hit" ? C.greenSoft : ev.result === "miss" ? C.redSoft : "#f4f3f0", borderRadius: 7, marginBottom: 5, border: `1px solid ${color}20`, flexWrap: "wrap" }}>
       <span style={{ fontSize: 10, color: C.textLight, flexShrink: 0 }}>{post.date}</span>
-      <a href={`https://stock.rakuten.co.jp/stock/detail/?code=${post.ticker.replace(".T", "")}`} target="_blank" rel="noopener noreferrer" style={{ fontSize: 12, color: C.text, fontWeight: 600, flex: 1, minWidth: 80, textDecoration: "none", borderBottom: `1px solid ${C.accent}50` }}>{post.company}</a>
+      <a href={`https://www.rakuten-sec.co.jp/web/market/search/?q=${post.ticker.replace(".T", "")}`} target="_blank" rel="noopener noreferrer" style={{ fontSize: 12, color: C.text, fontWeight: 600, flex: 1, minWidth: 80, textDecoration: "none", borderBottom: `1px solid ${C.accent}50` }}>{post.company}</a>
       <DirectionTag dir={post.direction} />
       <span style={{ fontSize: 11, fontWeight: 700, color, background: `${color}15`, padding: "1px 8px", borderRadius: 10, flexShrink: 0 }}>{ev.result === "hit" ? "✓ 的中" : ev.result === "miss" ? "✗ 外れ" : "検証中"}</span>
       {"changePct" in ev && ev.changePct && <span style={{ fontSize: 11, color: Number(ev.changePct) >= 0 ? C.green : C.red, fontWeight: 700, flexShrink: 0 }}>{Number(ev.changePct) >= 0 ? "+" : ""}{ev.changePct}%</span>}
@@ -343,12 +343,14 @@ function PickCard({ user, rank }: { user: User; rank: number }) {
               <DirectionTag dir={latest.direction} />
             </div>
             <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap", marginBottom: 2 }}>
-              <a href={`https://stock.rakuten.co.jp/stock/detail/?code=${latest.ticker.replace(".T", "")}`} target="_blank" rel="noopener noreferrer" title="楽天証券で見る"
+              <a href={`https://www.rakuten-sec.co.jp/web/market/search/?q=${latest.ticker.replace(".T", "")}`} target="_blank" rel="noopener noreferrer" title="楽天証券で見る"
                 style={{ fontFamily: "'DM Sans',sans-serif", fontWeight: 800, fontSize: 19, color: C.text, lineHeight: 1, textDecoration: "none", borderBottom: `2px solid ${C.accent}60`, paddingBottom: 1 }}
                 onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.color = C.accent; }}
                 onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.color = C.text; }}>{latest.company}</a>
-              <a href={`https://stock.rakuten.co.jp/stock/detail/?code=${latest.ticker.replace(".T", "")}`} target="_blank" rel="noopener noreferrer"
-                style={{ fontSize: 11, color: C.accent, background: C.accentSoft, padding: "1px 8px", borderRadius: 8, textDecoration: "none", border: `1px solid ${C.accent}30`, fontWeight: 600 }}>{latest.ticker} 🔗</a>
+              <a href={`https://www.rakuten-sec.co.jp/web/market/search/?q=${latest.ticker.replace(".T","")}`} target="_blank" rel="noopener noreferrer"
+                style={{ fontSize: 11, color: "#bf0000", background: "#fff0f0", padding: "2px 10px", borderRadius: 8, textDecoration: "none", border: "1px solid #bf000030", fontWeight: 700 }}>楽天証券 🔗</a>
+              <a href={`https://jp.tradingview.com/chart/?symbol=TSE:${latest.ticker.replace(".T","")}`} target="_blank" rel="noopener noreferrer"
+                style={{ fontSize: 11, color: "#1c6ef3", background: "#eef3ff", padding: "2px 10px", borderRadius: 8, textDecoration: "none", border: "1px solid #1c6ef330", fontWeight: 700 }}>TradingView 📈</a>
               {cur && (
                 <div style={{ display: "flex", alignItems: "center", gap: 5, background: cur.change >= 0 ? "#e6f7f0" : "#fceaea", border: `1px solid ${cur.change >= 0 ? C.green : C.red}40`, borderRadius: 20, padding: "3px 10px" }}>
                   <span style={{ fontFamily: "'DM Sans',sans-serif", fontWeight: 800, fontSize: 14, color: cur.change >= 0 ? C.green : C.red }}>¥{cur.price.toLocaleString()}</span>
