@@ -2,13 +2,14 @@
 
 export interface XUser {
   id: string;
-  handle: string;          // e.g. "kabu_master_jp" (without @)
+  handle: string;
   name: string;
   followers: number;
   avatarColor: string;
-  addedAt: string;         // ISO date
-  isActive: boolean;       // in current top-20
+  addedAt: string;
+  isActive: boolean;
   prevRank?: number;
+  platform?: "x" | "threads";  // default: x
 }
 
 export interface StockPost {
