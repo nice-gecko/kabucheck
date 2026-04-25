@@ -252,10 +252,10 @@ function PricePanel({ post }: { post: Post }) {
     <div style={{ display: "grid", gridTemplateColumns: isMobile ? "repeat(2,1fr)" : "repeat(4,1fr)", gap: 8, marginTop: 12, marginBottom: 4 }}>
       {cols.map((col, i) => (
         <div key={i} style={{ background: col.bg, border: `1px solid ${col.border}`, borderRadius: 10, padding: isMobile ? "9px 8px" : "10px 12px", textAlign: "center" }}>
-          <div style={{ fontSize: 13, marginBottom: 3 }}>{col.icon}</div>
-          <div style={{ fontSize: 10, color: col.labelColor, fontWeight: 700, letterSpacing: 0.3, marginBottom: 4 }}>{col.label}</div>
-          <div style={{ fontFamily: "'DM Sans',sans-serif", fontSize: isMobile ? 13 : 15, fontWeight: 800, color: col.valueColor, lineHeight: 1 }}>{col.value}</div>
-          {col.sub && <div style={{ fontSize: 10, color: col.subColor, marginTop: 4, fontWeight: 600 }}>{col.sub}</div>}
+          <div style={{ fontSize: 11, marginBottom: 2 }}>{col.icon}</div>
+          <div style={{ fontSize: 9, color: col.labelColor, fontWeight: 700, letterSpacing: 0.2, marginBottom: 3 }}>{col.label}</div>
+          <div style={{ fontFamily: "'DM Sans',sans-serif", fontSize: isMobile ? 12 : 14, fontWeight: 800, color: col.valueColor, lineHeight: 1 }}>{col.value}</div>
+          {col.sub && <div style={{ fontSize: 9, color: col.subColor, marginTop: 3, fontWeight: 600 }}>{col.sub}</div>}
         </div>
       ))}
     </div>
@@ -448,7 +448,8 @@ export default function App() {
             <span style={{ fontFamily: "'DM Sans',sans-serif", fontWeight: 800, fontSize: 17, color: C.text }}>KabuCheck</span>
             <span style={{ fontSize: 10, color: C.textLight, background: "#f0f0ec", padding: "2px 8px", borderRadius: 10 }}>β Demo</span>
           </div>
-          <span style={{ fontSize: 12, color: C.textLight, display: w < 520 ? "none" : "inline" }}>的中率ランキング · 20名 · 現在値リアルタイム</span>
+          <span style={{ fontSize: 12, color: C.textLight, display: w < 520 ? "none" : "inline" }}>的中率ランキング · 20名</span>
+          <a href="/admin" style={{ fontSize: 12, color: "#fff", background: C.accent, padding: "7px 16px", borderRadius: 8, textDecoration: "none", fontWeight: 700, fontFamily: "'DM Sans',sans-serif" }}>🔄 ランキング更新</a>
         </div>
       </div>
 
@@ -458,37 +459,45 @@ export default function App() {
           <p style={{ fontSize: 13, color: C.textMid, margin: 0, lineHeight: 1.7 }}>各銘柄の現在値・目標価格・押し目買い価格・撤退価格を自動算出。Claude AIが最新ピックを分析します。</p>
         </div>
 
-        <div style={{ display: "grid", gridTemplateColumns: w < 520 ? "repeat(2,1fr)" : "repeat(4,1fr)", gap: 10, marginBottom: 20 }}>
+        {/* Stats バー */}
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 14, padding: "10px 14px", background: C.card, border: `1px solid ${C.border}`, borderRadius: 12, boxShadow: C.shadow, alignItems: "center" }}>
           {[
-            { icon: "🎯", label: "全体的中率", val: `${globalRate}%`, sub: `${allEvs.filter(e => e.result === "hit").length}/${allEvs.length}件` },
-            { icon: "👥", label: "分析人数", val: "20名", sub: "エンゲージメント選定" },
-            { icon: "📈", label: "強気ピック", val: `${upCount}銘柄`, sub: "現在値・目標価格付き" },
-            { icon: "📉", label: "弱気ピック", val: `${downCount}銘柄`, sub: "撤退価格自動算出" },
+            { icon: "🎯", label: "的中率", val: `${globalRate}%`, sub: `${allEvs.filter(e => e.result === "hit").length}/${allEvs.length}件` },
+            { icon: "👥", label: "分析", val: "20名" },
+            { icon: "📈", label: "強気", val: `${upCount}銘柄` },
+            { icon: "📉", label: "弱気", val: `${downCount}銘柄` },
           ].map((s, i) => (
-            <div key={i} style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 12, padding: "13px 15px", boxShadow: C.shadow }}>
-              <div style={{ fontSize: 18, marginBottom: 4 }}>{s.icon}</div>
-              <div style={{ fontSize: 10, color: C.textLight, marginBottom: 2 }}>{s.label}</div>
-              <div style={{ fontFamily: "'DM Sans',sans-serif", fontSize: 20, fontWeight: 800, color: C.text }}>{s.val}</div>
-              <div style={{ fontSize: 10, color: C.textLight, marginTop: 1 }}>{s.sub}</div>
+            <div key={i} style={{ display: "flex", alignItems: "center", gap: 6, paddingRight: 12, borderRight: i < 3 ? `1px solid ${C.border}` : "none" }}>
+              <span style={{ fontSize: 15 }}>{s.icon}</span>
+              <div>
+                <div style={{ fontSize: 9, color: C.textLight, lineHeight: 1 }}>{s.label}</div>
+                <div style={{ fontFamily: "'DM Sans',sans-serif", fontSize: 15, fontWeight: 800, color: C.text, lineHeight: 1.2 }}>{s.val}</div>
+                {"sub" in s && s.sub && <div style={{ fontSize: 9, color: C.textLight }}>{s.sub}</div>}
+              </div>
             </div>
           ))}
         </div>
 
-        <div style={{ display: "grid", gridTemplateColumns: w < 520 ? "repeat(2,1fr)" : "auto", gap: w < 520 ? 6 : 0, alignItems: "center", marginBottom: 16, padding: "10px 14px", background: C.card, borderRadius: 10, border: `1px solid ${C.border}` }}>
-          {w >= 520 && <span style={{ fontSize: 11, color: C.textMid, fontWeight: 700, marginRight: 8 }}>価格凡例:</span>}
-          {[{ icon: "📊", label: "現在値", desc: "デモ価格" }, { icon: "🎯", label: "目標価格", desc: "予想者の目標" }, { icon: "📉", label: "押し目買い", desc: "現在値 −4%" }, { icon: "🛑", label: "撤退価格", desc: "現在値 −7.5%" }].map((l, i) => (
-            <div key={i} style={{ display: "flex", alignItems: "center", gap: 4, marginLeft: w >= 520 ? 12 : 0 }}>
-              <span style={{ fontSize: 13 }}>{l.icon}</span><span style={{ fontSize: 11, color: C.text, fontWeight: 600 }}>{l.label}</span><span style={{ fontSize: 10, color: C.textLight }}>({l.desc})</span>
-            </div>
-          ))}
-        </div>
-
+        {/* Filter + 凡例 */}
         <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 16, flexWrap: "wrap" }}>
           <span style={{ fontSize: 12, color: C.textMid }}>フィルター:</span>
           {[["all", "すべて"], ["up", "↑ 強気のみ"], ["down", "↓ 弱気のみ"]].map(([v, label]) => (
             <button key={v} onClick={() => setFilter(v)} style={{ background: filter === v ? C.accent : "transparent", color: filter === v ? "#fff" : C.textMid, border: `1px solid ${filter === v ? C.accent : C.border}`, borderRadius: 8, padding: "6px 14px", fontSize: 12, cursor: "pointer", fontFamily: "'DM Sans',sans-serif", fontWeight: 600, transition: "all 0.15s" }}>{label}</button>
           ))}
-          <span style={{ marginLeft: "auto", fontSize: 11, color: C.textLight, background: "#f4f3f0", padding: "4px 12px", borderRadius: 20 }}>的中率順（高い順）</span>
+          <div style={{ marginLeft: "auto", display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
+            <span style={{ fontSize: 10, color: C.textMid, fontWeight: 700 }}>凡例:</span>
+            {[
+              { icon: "📊", label: "現在値" },
+              { icon: "🎯", label: "目標" },
+              { icon: "📉", label: "押し目 −4%" },
+              { icon: "🛑", label: "撤退 −7.5%" },
+            ].map((l, i) => (
+              <div key={i} style={{ display: "flex", alignItems: "center", gap: 3 }}>
+                <span style={{ fontSize: 11 }}>{l.icon}</span>
+                <span style={{ fontSize: 10, color: C.textMid }}>{l.label}</span>
+              </div>
+            ))}
+          </div>
         </div>
 
         {displayed.map(u => <PickCard key={u.id} user={u} rank={ranked.indexOf(u) + 1} />)}
