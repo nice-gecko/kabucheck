@@ -1,12 +1,9 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
 const API_BASE = process.env.NEXT_PUBLIC_SCREENER_API_URL || 'https://screener-api-i6pi.onrender.com';
 
-// ─────────────────────────────────────────────
-// 型定義
-// ─────────────────────────────────────────────
 interface ScreenerResult {
   ticker: string;
   name: string;
@@ -49,19 +46,16 @@ interface ApiResponse {
   results: ScreenerResult[];
 }
 
-// ─────────────────────────────────────────────
-// ユーティリティ
-// ─────────────────────────────────────────────
 function fmtPrice(r: ScreenerResult) {
   return r.currency === 'JPY'
     ? `¥${r.price.toLocaleString()}`
     : `$${r.price.toFixed(2)}`;
 }
 
-function getRsiColor(rsi: number) {
-  if (rsi >= 70) return 'text-red-500 bg-red-50';
-  if (rsi >= 55) return 'text-yellow-600 bg-yellow-50';
-  return 'text-green-600 bg-green-50';
+function getRsiStyle(rsi: number): React.CSSProperties {
+  if (rsi >= 70) return { color: '#ef4444', backgroundColor: '#fef2f2' };
+  if (rsi >= 55) return { color: '#ca8a04', backgroundColor: '#fefce8' };
+  return { color: '#16a34a', backgroundColor: '#f0fdf4' };
 }
 
 function getRakutenUrl(r: ScreenerResult) {
@@ -71,9 +65,6 @@ function getRakutenUrl(r: ScreenerResult) {
   return `https://www.rakuten-sec.co.jp/web/market/search/ipmenu_us_stock.html?ID=${r.ticker}`;
 }
 
-// ─────────────────────────────────────────────
-// メインページ
-// ─────────────────────────────────────────────
 export default function ScreenerPage() {
   const [results, setResults] = useState<ScreenerResult[]>([]);
   const [loading, setLoading] = useState(false);
@@ -86,13 +77,11 @@ export default function ScreenerPage() {
   const [sortBy, setSortBy] = useState('score');
   const [searchQ, setSearchQ] = useState('');
 
-  // 個別分析
   const [analyzeInput, setAnalyzeInput] = useState('');
   const [analyzeResult, setAnalyzeResult] = useState<ScreenerResult | null>(null);
   const [analyzeLoading, setAnalyzeLoading] = useState(false);
   const [analyzeError, setAnalyzeError] = useState('');
 
-  // ─── スクリーニング実行 ───
   async function runScreening() {
     setLoading(true);
     setError('');
@@ -103,14 +92,13 @@ export default function ScreenerPage() {
       setResults(data.results);
       setIsPremium(data.is_premium);
       setUpdatedAt(data.updated_at ? new Date(data.updated_at).toLocaleString('ja-JP') : '');
-    } catch (e) {
+    } catch {
       setError('データ取得に失敗しました。しばらく経ってから再試行してください。');
     } finally {
       setLoading(false);
     }
   }
 
-  // ─── 個別銘柄分析 ───
   async function runAnalyze() {
     if (!analyzeInput.trim()) return;
     setAnalyzeLoading(true);
@@ -121,14 +109,13 @@ export default function ScreenerPage() {
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data = await res.json();
       setAnalyzeResult(data.result);
-    } catch (e) {
+    } catch {
       setAnalyzeError('データを取得できませんでした。銘柄コードを確認してください。');
     } finally {
       setAnalyzeLoading(false);
     }
   }
 
-  // ─── フィルタリング ───
   const filtered = results
     .filter(r => filterMkt === 'すべて' || r.market === filterMkt)
     .filter(r => filterPat === 'すべて' || r.pattern === filterPat)
@@ -146,22 +133,30 @@ export default function ScreenerPage() {
 
   const patterns = ['すべて', ...Array.from(new Set(results.map(r => r.pattern)))];
 
+  const card: React.CSSProperties = {
+    backgroundColor: '#fff',
+    border: '1px solid #e5e7eb',
+    borderRadius: 12,
+    boxShadow: '0 1px 3px rgba(0,0,0,0.07)',
+  };
+
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div style={{ minHeight: '100vh', backgroundColor: '#f9fafb', fontFamily: "'Noto Sans JP', sans-serif", color: '#111827' }}>
+
       {/* ヘッダー */}
-      <div className="bg-gradient-to-r from-slate-900 to-blue-900 text-white px-6 py-5">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex items-center justify-between flex-wrap gap-3">
+      <div style={{ background: 'linear-gradient(to right, #0f172a, #1e3a8a)', color: '#fff', padding: '20px 24px' }}>
+        <div style={{ maxWidth: 1280, margin: '0 auto' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
             <div>
-              <h1 className="text-2xl font-black tracking-tight">
+              <h1 style={{ fontSize: 22, fontWeight: 900, letterSpacing: '-0.5px', margin: 0 }}>
                 📈 新高値ブレイク スクリーナー
               </h1>
-              <p className="text-slate-400 text-sm mt-1">
+              <p style={{ color: '#94a3b8', fontSize: 13, marginTop: 4, marginBottom: 0 }}>
                 ヘッジファンドが使う新高値フィルター｜東証 ＋ 米国株（日米対応）
               </p>
             </div>
             {updatedAt && (
-              <div className="text-slate-400 text-xs font-mono">
+              <div style={{ color: '#94a3b8', fontSize: 11, fontFamily: 'monospace' }}>
                 最終更新: {updatedAt}
               </div>
             )}
@@ -169,57 +164,81 @@ export default function ScreenerPage() {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 py-6">
-        {/* メインタブ */}
-        <div className="flex gap-0 border-b-2 border-gray-200 mb-6">
-          <button
-            onClick={() => setActiveTab('screen')}
-            className={`px-5 py-3 text-sm font-semibold border-b-2 -mb-0.5 transition-colors ${
-              activeTab === 'screen'
-                ? 'border-blue-600 text-blue-600'
-                : 'border-transparent text-gray-500 hover:text-gray-700'
-            }`}
-          >
-            📊 スクリーニング結果
-          </button>
-          <button
-            onClick={() => setActiveTab('analyze')}
-            className={`px-5 py-3 text-sm font-semibold border-b-2 -mb-0.5 transition-colors ${
-              activeTab === 'analyze'
-                ? 'border-blue-600 text-blue-600'
-                : 'border-transparent text-gray-500 hover:text-gray-700'
-            }`}
-          >
-            🔍 個別銘柄 詳細分析
-          </button>
+      <div style={{ maxWidth: 1280, margin: '0 auto', padding: '24px 16px' }}>
+
+        {/* タブ */}
+        <div style={{ display: 'flex', borderBottom: '2px solid #e5e7eb', marginBottom: 24 }}>
+          {(['screen', 'analyze'] as const).map(tab => (
+            <button
+              key={tab}
+              onClick={() => setActiveTab(tab)}
+              style={{
+                padding: '12px 20px',
+                fontSize: 13,
+                fontWeight: 600,
+                background: 'none',
+                border: 'none',
+                borderBottom: activeTab === tab ? '2px solid #2563eb' : '2px solid transparent',
+                marginBottom: -2,
+                color: activeTab === tab ? '#2563eb' : '#6b7280',
+                cursor: 'pointer',
+              }}
+            >
+              {tab === 'screen' ? '📊 スクリーニング結果' : '🔍 個別銘柄 詳細分析'}
+            </button>
+          ))}
         </div>
 
-        {/* ─── スクリーニング結果タブ ─── */}
+        {/* ─── スクリーニングタブ ─── */}
         {activeTab === 'screen' && (
           <div>
             {/* 実行ボタン */}
-            <div className="flex items-center gap-4 mb-6 flex-wrap">
+            <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 24, flexWrap: 'wrap' }}>
               <button
                 onClick={runScreening}
                 disabled={loading}
-                className="bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white font-bold px-6 py-3 rounded-lg transition-colors flex items-center gap-2"
+                style={{
+                  backgroundColor: loading ? '#93c5fd' : '#2563eb',
+                  color: '#fff',
+                  fontWeight: 700,
+                  padding: '12px 24px',
+                  borderRadius: 8,
+                  border: 'none',
+                  cursor: loading ? 'not-allowed' : 'pointer',
+                  fontSize: 14,
+                  fontFamily: 'inherit',
+                }}
               >
                 {loading ? '⏳ スクリーニング中...' : '🚀 スクリーニング実行'}
               </button>
               {!isPremium && results.length > 0 && (
-                <div className="text-sm text-amber-600 bg-amber-50 border border-amber-200 rounded-lg px-4 py-2">
+                <div style={{
+                  fontSize: 13,
+                  color: '#92400e',
+                  backgroundColor: '#fffbeb',
+                  border: '1px solid #fcd34d',
+                  borderRadius: 8,
+                  padding: '8px 16px',
+                }}>
                   無料プラン：上位5銘柄を表示中
                 </div>
               )}
               {loading && (
-                <div className="text-sm text-gray-500">
+                <div style={{ fontSize: 13, color: '#6b7280' }}>
                   5〜10分かかります。しばらくお待ちください...
                 </div>
               )}
             </div>
 
             {error && (
-              <div className="bg-red-50 border border-red-200 text-red-700 rounded-lg p-4 mb-4">
+              <div style={{
+                backgroundColor: '#fef2f2',
+                border: '1px solid #fecaca',
+                color: '#b91c1c',
+                borderRadius: 8,
+                padding: 16,
+                marginBottom: 16,
+              }}>
                 {error}
               </div>
             )}
@@ -227,50 +246,84 @@ export default function ScreenerPage() {
             {results.length > 0 && (
               <>
                 {/* 統計カード */}
-                <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mb-5">
-                  {[
-                    ['通過銘柄', results.length, 'text-blue-600'],
-                    ['🚀 ブレイク中', results.filter(r => r.pattern.includes('ブレイク中')).length, 'text-green-600'],
-                    ['📉 押し目', results.filter(r => r.pattern.includes('押し目')).length, 'text-yellow-600'],
-                    ['🇯🇵 東証', results.filter(r => r.market === '東証').length, 'text-blue-600'],
-                    ['🇺🇸 米国', results.filter(r => r.market === '米国').length, 'text-blue-600'],
-                  ].map(([label, val, color]) => (
-                    <div key={label as string} className="bg-white border border-gray-200 rounded-xl p-4 shadow-sm">
-                      <div className="text-xs text-gray-500 uppercase tracking-wide mb-1">{label}</div>
-                      <div className={`text-2xl font-black font-mono ${color}`}>{val}</div>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: 12, marginBottom: 20 }}>
+                  {([
+                    ['通過銘柄', results.length, '#2563eb'],
+                    ['🚀 ブレイク中', results.filter(r => r.pattern.includes('ブレイク中')).length, '#16a34a'],
+                    ['📉 押し目', results.filter(r => r.pattern.includes('押し目')).length, '#ca8a04'],
+                    ['🇯🇵 東証', results.filter(r => r.market === '東証').length, '#2563eb'],
+                    ['🇺🇸 米国', results.filter(r => r.market === '米国').length, '#2563eb'],
+                  ] as [string, number, string][]).map(([label, val, color]) => (
+                    <div key={label} style={{ ...card, padding: 16 }}>
+                      <div style={{ fontSize: 11, color: '#6b7280', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 4 }}>{label}</div>
+                      <div style={{ fontSize: 24, fontWeight: 900, fontFamily: 'monospace', color }}>{val}</div>
                     </div>
                   ))}
                 </div>
 
                 {/* フィルター */}
-                <div className="bg-white border border-gray-200 rounded-xl p-4 mb-4 shadow-sm">
-                  <div className="flex flex-wrap gap-3 items-center">
+                <div style={{ ...card, padding: 16, marginBottom: 16 }}>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12, alignItems: 'center' }}>
                     <input
                       value={searchQ}
                       onChange={e => setSearchQ(e.target.value)}
                       placeholder="銘柄名 / コードで検索..."
-                      className="border border-gray-300 rounded-lg px-3 py-2 text-sm w-48 focus:outline-none focus:border-blue-500"
+                      style={{
+                        border: '1px solid #d1d5db',
+                        borderRadius: 8,
+                        padding: '8px 12px',
+                        fontSize: 13,
+                        width: 192,
+                        outline: 'none',
+                        fontFamily: 'inherit',
+                      }}
                     />
-                    <div className="flex gap-1">
+                    <div style={{ display: 'flex', gap: 4 }}>
                       {['すべて', '東証', '米国'].map(m => (
                         <button key={m} onClick={() => setFilterMkt(m)}
-                          className={`px-3 py-1.5 text-xs rounded-lg font-medium transition-colors ${
-                            filterMkt === m ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                          }`}>{m}</button>
+                          style={{
+                            padding: '6px 12px',
+                            fontSize: 11,
+                            borderRadius: 8,
+                            fontWeight: 500,
+                            border: 'none',
+                            cursor: 'pointer',
+                            backgroundColor: filterMkt === m ? '#2563eb' : '#f3f4f6',
+                            color: filterMkt === m ? '#fff' : '#4b5563',
+                            fontFamily: 'inherit',
+                          }}>{m}</button>
                       ))}
                     </div>
-                    <div className="flex gap-1 flex-wrap">
+                    <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
                       {patterns.slice(0, 4).map(p => (
                         <button key={p} onClick={() => setFilterPat(p)}
-                          className={`px-3 py-1.5 text-xs rounded-lg font-medium transition-colors ${
-                            filterPat === p ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                          }`}>{p}</button>
+                          style={{
+                            padding: '6px 12px',
+                            fontSize: 11,
+                            borderRadius: 8,
+                            fontWeight: 500,
+                            border: 'none',
+                            cursor: 'pointer',
+                            backgroundColor: filterPat === p ? '#2563eb' : '#f3f4f6',
+                            color: filterPat === p ? '#fff' : '#4b5563',
+                            fontFamily: 'inherit',
+                          }}>{p}</button>
                       ))}
                     </div>
                     <select
                       value={sortBy}
                       onChange={e => setSortBy(e.target.value)}
-                      className="ml-auto border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none"
+                      style={{
+                        marginLeft: 'auto',
+                        border: '1px solid #d1d5db',
+                        borderRadius: 8,
+                        padding: '8px 12px',
+                        fontSize: 13,
+                        outline: 'none',
+                        fontFamily: 'inherit',
+                        backgroundColor: '#fff',
+                        cursor: 'pointer',
+                      }}
                     >
                       <option value="score">スコア順</option>
                       <option value="rsi">RSI順</option>
@@ -280,84 +333,137 @@ export default function ScreenerPage() {
                   </div>
                 </div>
 
-                <div className="text-xs text-gray-500 mb-2 font-mono">{filtered.length} 銘柄表示中</div>
+                <div style={{ fontSize: 11, color: '#6b7280', marginBottom: 8, fontFamily: 'monospace' }}>{filtered.length} 銘柄表示中</div>
 
                 {/* テーブル */}
-                <div className="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm overflow-x-auto">
-                  <table className="w-full text-sm min-w-[1000px]">
+                <div style={{ ...card, overflowX: 'auto' }}>
+                  <table style={{ width: '100%', fontSize: 13, minWidth: 1000, borderCollapse: 'collapse' }}>
                     <thead>
-                      <tr className="bg-gray-50 border-b border-gray-200">
+                      <tr style={{ backgroundColor: '#f9fafb', borderBottom: '1px solid #e5e7eb' }}>
                         {['銘柄 / 業種', '市場', 'パターン', 'スコア', '現在値', '52W高値比', 'RSI(14)', '出来高比(5D)', '財務', '楽天'].map(h => (
-                          <th key={h} className="px-4 py-3 text-left text-xs text-gray-500 uppercase tracking-wide whitespace-nowrap">{h}</th>
+                          <th key={h} style={{
+                            padding: '12px 16px',
+                            textAlign: 'left',
+                            fontSize: 11,
+                            color: '#6b7280',
+                            textTransform: 'uppercase',
+                            letterSpacing: '0.05em',
+                            whiteSpace: 'nowrap',
+                            fontWeight: 600,
+                          }}>{h}</th>
                         ))}
                       </tr>
                     </thead>
                     <tbody>
-                      {filtered.map((r, i) => (
-                        <tr key={r.ticker} className="border-b border-gray-100 hover:bg-blue-50 transition-colors">
-                          <td className="px-4 py-3">
-                            <div className="font-bold text-gray-900">{r.flag} {r.name}</div>
-                            <div className="text-xs text-blue-600 font-mono">{r.ticker}</div>
-                            <div className="text-xs text-gray-400">🏭 {r.sector}</div>
+                      {filtered.map(r => (
+                        <tr
+                          key={r.ticker}
+                          style={{ borderBottom: '1px solid #f3f4f6' }}
+                          onMouseEnter={e => (e.currentTarget.style.backgroundColor = '#eff6ff')}
+                          onMouseLeave={e => (e.currentTarget.style.backgroundColor = 'transparent')}
+                        >
+                          <td style={{ padding: '12px 16px' }}>
+                            <div style={{ fontWeight: 700, color: '#111827' }}>{r.flag} {r.name}</div>
+                            <div style={{ fontSize: 11, color: '#2563eb', fontFamily: 'monospace' }}>{r.ticker}</div>
+                            <div style={{ fontSize: 11, color: '#9ca3af' }}>🏭 {r.sector}</div>
                           </td>
-                          <td className="px-4 py-3">
-                            <span className={`text-xs px-2 py-1 rounded font-semibold ${
-                              r.market === '東証' ? 'bg-green-100 text-green-700' : 'bg-blue-100 text-blue-700'
-                            }`}>{r.market}</span>
+                          <td style={{ padding: '12px 16px' }}>
+                            <span style={{
+                              fontSize: 11,
+                              padding: '2px 8px',
+                              borderRadius: 4,
+                              fontWeight: 600,
+                              backgroundColor: r.market === '東証' ? '#dcfce7' : '#dbeafe',
+                              color: r.market === '東証' ? '#15803d' : '#1d4ed8',
+                            }}>{r.market}</span>
                           </td>
-                          <td className="px-4 py-3">
-                            <span className="text-xs px-2 py-1 rounded bg-yellow-50 border border-yellow-200 text-yellow-800 whitespace-nowrap">
+                          <td style={{ padding: '12px 16px' }}>
+                            <span style={{
+                              fontSize: 11,
+                              padding: '2px 8px',
+                              borderRadius: 4,
+                              backgroundColor: '#fefce8',
+                              border: '1px solid #fef08a',
+                              color: '#854d0e',
+                              whiteSpace: 'nowrap',
+                            }}>
                               {r.pattern}
                             </span>
                           </td>
-                          <td className="px-4 py-3">
-                            <div className="flex items-center gap-2">
-                              <span className={`font-black font-mono text-sm ${
-                                r.score >= 80 ? 'text-purple-600' : r.score >= 65 ? 'text-blue-600' : 'text-gray-500'
-                              }`}>{r.score}</span>
-                              <div className="h-1.5 bg-gray-200 rounded flex-1 min-w-[40px]">
-                                <div
-                                  className="h-1.5 rounded bg-gradient-to-r from-blue-500 to-purple-500"
-                                  style={{ width: `${Math.min(100, r.score)}%` }}
-                                />
+                          <td style={{ padding: '12px 16px' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                              <span style={{
+                                fontWeight: 900,
+                                fontFamily: 'monospace',
+                                fontSize: 13,
+                                color: r.score >= 80 ? '#9333ea' : r.score >= 65 ? '#2563eb' : '#6b7280',
+                              }}>{r.score}</span>
+                              <div style={{ height: 6, backgroundColor: '#e5e7eb', borderRadius: 3, flex: 1, minWidth: 40 }}>
+                                <div style={{
+                                  height: 6,
+                                  borderRadius: 3,
+                                  background: 'linear-gradient(to right, #3b82f6, #a855f7)',
+                                  width: `${Math.min(100, r.score)}%`,
+                                }} />
                               </div>
                             </div>
                           </td>
-                          <td className="px-4 py-3">
-                            <div className="font-bold font-mono">{fmtPrice(r)}</div>
-                            <div className="text-xs text-gray-400">
+                          <td style={{ padding: '12px 16px' }}>
+                            <div style={{ fontWeight: 700, fontFamily: 'monospace' }}>{fmtPrice(r)}</div>
+                            <div style={{ fontSize: 11, color: '#9ca3af' }}>
                               52W高 {r.currency === 'JPY' ? `¥${r.high_52w.toLocaleString()}` : `$${r.high_52w.toFixed(2)}`}
                             </div>
                           </td>
-                          <td className="px-4 py-3">
+                          <td style={{ padding: '12px 16px' }}>
                             {r.pullback === 0
-                              ? <span className="text-green-600 font-bold">AT HIGH</span>
-                              : <span className="text-yellow-600 font-semibold">-{r.pullback}%</span>
+                              ? <span style={{ color: '#16a34a', fontWeight: 700 }}>AT HIGH</span>
+                              : <span style={{ color: '#ca8a04', fontWeight: 600 }}>-{r.pullback}%</span>
                             }
                           </td>
-                          <td className="px-4 py-3">
-                            <span className={`font-mono font-bold text-xs px-2 py-1 rounded ${getRsiColor(r.rsi)}`}>
+                          <td style={{ padding: '12px 16px' }}>
+                            <span style={{
+                              fontFamily: 'monospace',
+                              fontWeight: 700,
+                              fontSize: 11,
+                              padding: '2px 8px',
+                              borderRadius: 4,
+                              ...getRsiStyle(r.rsi),
+                            }}>
                               {r.rsi}
                             </span>
                           </td>
-                          <td className="px-4 py-3">
-                            <div className={`font-mono text-xs font-semibold ${
-                              r.vol_5d >= 3 ? 'text-orange-500' : r.vol_5d >= 2 ? 'text-yellow-600' : 'text-gray-500'
-                            }`}>×{r.vol_5d}</div>
-                            <div className="text-xs text-gray-400">今日×{r.vol_ratio}</div>
+                          <td style={{ padding: '12px 16px' }}>
+                            <div style={{
+                              fontFamily: 'monospace',
+                              fontSize: 11,
+                              fontWeight: 600,
+                              color: r.vol_5d >= 3 ? '#f97316' : r.vol_5d >= 2 ? '#ca8a04' : '#6b7280',
+                            }}>×{r.vol_5d}</div>
+                            <div style={{ fontSize: 11, color: '#9ca3af' }}>今日×{r.vol_ratio}</div>
                           </td>
-                          <td className="px-4 py-3">
-                            <div className="text-xs">{r.per ? `PER ${r.per}倍` : '—'}</div>
-                            <div className={`text-xs ${r.earn_growth && r.earn_growth > 0 ? 'text-green-600' : 'text-red-500'}`}>
+                          <td style={{ padding: '12px 16px' }}>
+                            <div style={{ fontSize: 11 }}>{r.per ? `PER ${r.per}倍` : '—'}</div>
+                            <div style={{
+                              fontSize: 11,
+                              color: r.earn_growth != null && r.earn_growth > 0 ? '#16a34a' : '#ef4444',
+                            }}>
                               {r.earn_growth != null ? `${r.earn_growth > 0 ? '+' : ''}${r.earn_growth}%` : '—'}
                             </div>
                           </td>
-                          <td className="px-4 py-3">
+                          <td style={{ padding: '12px 16px' }}>
                             <a
                               href={getRakutenUrl(r)}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="bg-red-700 hover:bg-red-800 text-white text-xs font-bold px-2 py-1 rounded"
+                              style={{
+                                backgroundColor: '#b91c1c',
+                                color: '#fff',
+                                fontSize: 11,
+                                fontWeight: 700,
+                                padding: '4px 8px',
+                                borderRadius: 4,
+                                textDecoration: 'none',
+                              }}
                             >
                               楽天
                             </a>
@@ -371,11 +477,16 @@ export default function ScreenerPage() {
             )}
 
             {results.length === 0 && !loading && (
-              <div className="bg-white border border-gray-200 rounded-xl p-12 text-center text-gray-500 shadow-sm">
-                <div className="text-4xl mb-3">📊</div>
-                <div className="text-lg font-semibold mb-2">スクリーニングを実行してください</div>
-                <div className="text-sm">「スクリーニング実行」ボタンを押すと、日米5,000銘柄を自動分析します</div>
-                <div className="text-xs text-gray-400 mt-2">※ 初回は5〜10分かかります</div>
+              <div style={{
+                ...card,
+                padding: '48px 16px',
+                textAlign: 'center',
+                color: '#6b7280',
+              }}>
+                <div style={{ fontSize: 36, marginBottom: 12 }}>📊</div>
+                <div style={{ fontSize: 17, fontWeight: 600, marginBottom: 8 }}>スクリーニングを実行してください</div>
+                <div style={{ fontSize: 13 }}>「スクリーニング実行」ボタンを押すと、日米5,000銘柄を自動分析します</div>
+                <div style={{ fontSize: 11, color: '#9ca3af', marginTop: 8 }}>※ 初回は5〜10分かかります</div>
               </div>
             )}
           </div>
@@ -384,22 +495,41 @@ export default function ScreenerPage() {
         {/* ─── 個別銘柄分析タブ ─── */}
         {activeTab === 'analyze' && (
           <div>
-            <div className="bg-white border border-gray-200 rounded-xl p-5 mb-5 shadow-sm">
-              <p className="text-sm text-gray-500 mb-3">
+            <div style={{ ...card, padding: 20, marginBottom: 20 }}>
+              <p style={{ fontSize: 13, color: '#6b7280', marginBottom: 12, marginTop: 0 }}>
                 スクリーニング非通過の銘柄も分析できます。日本株は4桁コード（例：7203）、米国株はティッカー（例：AAPL）を入力してください。
               </p>
-              <div className="flex gap-3">
+              <div style={{ display: 'flex', gap: 12 }}>
                 <input
                   value={analyzeInput}
                   onChange={e => setAnalyzeInput(e.target.value)}
                   onKeyDown={e => e.key === 'Enter' && runAnalyze()}
                   placeholder="例: 7203 / 9984 / AAPL / NVDA"
-                  className="flex-1 border border-gray-300 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-blue-500"
+                  style={{
+                    flex: 1,
+                    border: '1px solid #d1d5db',
+                    borderRadius: 8,
+                    padding: '12px 16px',
+                    fontSize: 13,
+                    outline: 'none',
+                    fontFamily: 'inherit',
+                  }}
                 />
                 <button
                   onClick={runAnalyze}
                   disabled={analyzeLoading}
-                  className="bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white font-bold px-6 py-3 rounded-lg transition-colors whitespace-nowrap"
+                  style={{
+                    backgroundColor: analyzeLoading ? '#93c5fd' : '#2563eb',
+                    color: '#fff',
+                    fontWeight: 700,
+                    padding: '12px 24px',
+                    borderRadius: 8,
+                    border: 'none',
+                    cursor: analyzeLoading ? 'not-allowed' : 'pointer',
+                    fontSize: 13,
+                    whiteSpace: 'nowrap',
+                    fontFamily: 'inherit',
+                  }}
                 >
                   {analyzeLoading ? '⏳ 分析中...' : '📊 分析する'}
                 </button>
@@ -407,7 +537,14 @@ export default function ScreenerPage() {
             </div>
 
             {analyzeError && (
-              <div className="bg-red-50 border border-red-200 text-red-700 rounded-lg p-4 mb-4">
+              <div style={{
+                backgroundColor: '#fef2f2',
+                border: '1px solid #fecaca',
+                color: '#b91c1c',
+                borderRadius: 8,
+                padding: 16,
+                marginBottom: 16,
+              }}>
                 ⚠️ {analyzeError}
               </div>
             )}
@@ -415,54 +552,81 @@ export default function ScreenerPage() {
             {analyzeResult && (
               <div>
                 {/* 銘柄ヘッダー */}
-                <div className="bg-white border border-gray-200 rounded-xl p-5 mb-4 shadow-sm">
-                  <div className="flex items-center gap-3 flex-wrap mb-2">
-                    <span className="text-xl font-black text-gray-900">
+                <div style={{ ...card, padding: 20, marginBottom: 16 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap', marginBottom: 8 }}>
+                    <span style={{ fontSize: 20, fontWeight: 900, color: '#111827' }}>
                       {analyzeResult.flag} {analyzeResult.name}
                     </span>
-                    <span className="text-blue-600 font-mono text-sm">{analyzeResult.ticker}</span>
-                    <span className={`text-xs px-2 py-1 rounded font-semibold ${
-                      analyzeResult.passed
-                        ? 'bg-green-100 text-green-700'
-                        : 'bg-yellow-100 text-yellow-700'
-                    }`}>
+                    <span style={{ color: '#2563eb', fontFamily: 'monospace', fontSize: 13 }}>{analyzeResult.ticker}</span>
+                    <span style={{
+                      fontSize: 11,
+                      padding: '2px 8px',
+                      borderRadius: 4,
+                      fontWeight: 600,
+                      backgroundColor: analyzeResult.passed ? '#dcfce7' : '#fefce8',
+                      color: analyzeResult.passed ? '#15803d' : '#92400e',
+                    }}>
                       {analyzeResult.passed ? '✅ スクリーニング通過' : '📋 参考分析（未通過）'}
                     </span>
-                    <span className="text-xs px-2 py-1 rounded bg-yellow-50 border border-yellow-200 text-yellow-800">
+                    <span style={{
+                      fontSize: 11,
+                      padding: '2px 8px',
+                      borderRadius: 4,
+                      backgroundColor: '#fefce8',
+                      border: '1px solid #fef08a',
+                      color: '#854d0e',
+                    }}>
                       {analyzeResult.pattern}
                     </span>
-                    <a href={getRakutenUrl(analyzeResult)} target="_blank" rel="noopener noreferrer"
-                      className="bg-red-700 hover:bg-red-800 text-white text-xs font-bold px-3 py-1.5 rounded">
+                    <a
+                      href={getRakutenUrl(analyzeResult)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{
+                        backgroundColor: '#b91c1c',
+                        color: '#fff',
+                        fontSize: 11,
+                        fontWeight: 700,
+                        padding: '6px 12px',
+                        borderRadius: 4,
+                        textDecoration: 'none',
+                      }}
+                    >
                       楽天証券で確認
                     </a>
                   </div>
-                  <div className="text-sm text-gray-500">
+                  <div style={{ fontSize: 13, color: '#6b7280' }}>
                     🏭 {analyzeResult.sector}　|　現在値 <b>{fmtPrice(analyzeResult)}</b>　|　{analyzeResult.risk}
                   </div>
                 </div>
 
                 {/* スコア */}
-                <div className="bg-white border border-gray-200 rounded-xl p-5 mb-4 shadow-sm">
-                  <div className="text-xs text-gray-400 uppercase tracking-wide mb-2">総合スコア</div>
-                  <div className="flex items-center gap-4">
-                    <span className={`text-5xl font-black font-mono ${
-                      analyzeResult.score >= 80 ? 'text-purple-600' : analyzeResult.score >= 60 ? 'text-blue-600' : 'text-gray-500'
-                    }`}>{analyzeResult.score}</span>
-                    <div className="flex-1">
-                      <div className="h-3 bg-gray-200 rounded-full">
-                        <div
-                          className="h-3 rounded-full bg-gradient-to-r from-blue-500 to-purple-500"
-                          style={{ width: `${Math.min(100, analyzeResult.score)}%` }}
-                        />
+                <div style={{ ...card, padding: 20, marginBottom: 16 }}>
+                  <div style={{ fontSize: 11, color: '#9ca3af', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 8 }}>総合スコア</div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+                    <span style={{
+                      fontSize: 48,
+                      fontWeight: 900,
+                      fontFamily: 'monospace',
+                      color: analyzeResult.score >= 80 ? '#9333ea' : analyzeResult.score >= 60 ? '#2563eb' : '#6b7280',
+                    }}>{analyzeResult.score}</span>
+                    <div style={{ flex: 1 }}>
+                      <div style={{ height: 12, backgroundColor: '#e5e7eb', borderRadius: 6 }}>
+                        <div style={{
+                          height: 12,
+                          borderRadius: 6,
+                          background: 'linear-gradient(to right, #3b82f6, #a855f7)',
+                          width: `${Math.min(100, analyzeResult.score)}%`,
+                        }} />
                       </div>
-                      <div className="text-xs text-gray-400 mt-1">60点以上でスクリーニング通過</div>
+                      <div style={{ fontSize: 11, color: '#9ca3af', marginTop: 4 }}>60点以上でスクリーニング通過</div>
                     </div>
                   </div>
                 </div>
 
                 {/* 指標グリッド */}
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
-                  {[
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: 12, marginBottom: 16 }}>
+                  {([
                     ['現在値', fmtPrice(analyzeResult)],
                     ['52W高値比', analyzeResult.pullback === 0 ? 'AT HIGH' : `-${analyzeResult.pullback}%`],
                     ['RSI(14)', `${analyzeResult.rsi}`],
@@ -471,15 +635,22 @@ export default function ScreenerPage() {
                     ['ATR(%)', `${analyzeResult.atr}%`],
                     ['20日MA', analyzeResult.currency === 'JPY' ? `¥${analyzeResult.ma20.toLocaleString()}` : `$${analyzeResult.ma20}`],
                     ['50日MA', analyzeResult.currency === 'JPY' ? `¥${analyzeResult.ma50.toLocaleString()}` : `$${analyzeResult.ma50}`],
-                  ].map(([label, val]) => (
-                    <div key={label} className="bg-white border border-gray-200 rounded-xl p-4 shadow-sm">
-                      <div className="text-xs text-gray-400 uppercase tracking-wide mb-1">{label}</div>
-                      <div className="text-base font-bold font-mono text-gray-900">{val}</div>
+                  ] as [string, string][]).map(([label, val]) => (
+                    <div key={label} style={{ ...card, padding: 16 }}>
+                      <div style={{ fontSize: 11, color: '#9ca3af', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 4 }}>{label}</div>
+                      <div style={{ fontSize: 15, fontWeight: 700, fontFamily: 'monospace', color: '#111827' }}>{val}</div>
                     </div>
                   ))}
                 </div>
 
-                <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 text-xs text-amber-700">
+                <div style={{
+                  backgroundColor: '#fffbeb',
+                  border: '1px solid #fde68a',
+                  borderRadius: 8,
+                  padding: 12,
+                  fontSize: 11,
+                  color: '#b45309',
+                }}>
                   ⚠️ このツールは情報提供のみを目的としています。投資の最終判断はご自身の責任で行ってください。
                 </div>
               </div>
@@ -488,7 +659,7 @@ export default function ScreenerPage() {
         )}
 
         {/* 免責事項 */}
-        <div className="mt-8 text-xs text-gray-400 text-center">
+        <div style={{ marginTop: 32, fontSize: 11, color: '#9ca3af', textAlign: 'center' }}>
           このツールは情報提供のみを目的としています。投資助言ではありません。
           データはYahoo Financeから取得しており、遅延・誤りが生じる場合があります。
         </div>
