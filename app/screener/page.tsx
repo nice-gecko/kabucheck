@@ -148,6 +148,7 @@ export default function ScreenerPage() {
         <div style={{ maxWidth: 1280, margin: '0 auto' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
             <div>
+              <a href="/" style={{ display: 'inline-block', color: '#94a3b8', fontSize: 13, textDecoration: 'none', marginBottom: 8, fontWeight: 600 }}>← KabuCheck</a>
               <h1 style={{ fontSize: 22, fontWeight: 900, letterSpacing: '-0.5px', margin: 0 }}>
                 📈 新高値ブレイク スクリーナー
               </h1>

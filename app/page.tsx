@@ -512,6 +512,7 @@ export default function App() {
             <span style={{ fontSize: 10, color: C.textLight, background: "#f0f0ec", padding: "2px 8px", borderRadius: 10 }}>β Demo</span>
           </div>
           <div style={{ display: "flex", gap: 8 }}>
+            <a href="/screener" style={{ fontSize: 12, color: C.textMid, background: "transparent", padding: "7px 14px", borderRadius: 8, textDecoration: "none", fontWeight: 600, fontFamily: "'DM Sans',sans-serif", border: `1px solid ${C.border}` }}>📈 スクリーナー</a>
             <a href="/admin" style={{ fontSize: 12, color: C.textMid, background: "transparent", padding: "7px 14px", borderRadius: 8, textDecoration: "none", fontWeight: 600, fontFamily: "'DM Sans',sans-serif", border: `1px solid ${C.border}` }}>⚙ 管理画面</a>
             <a href="/admin" style={{ fontSize: 12, color: "#fff", background: C.accent, padding: "7px 16px", borderRadius: 8, textDecoration: "none", fontWeight: 700, fontFamily: "'DM Sans',sans-serif" }}>🔄 ランキング更新</a>
           </div>
