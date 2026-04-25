@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { fetchCurrentPrice } from "@/lib/yahoo-finance";
+import { fetchCurrentPriceWithATR } from "@/lib/yahoo-finance";
 import * as store from "@/lib/store";
 
 export async function GET(req: NextRequest) {
@@ -13,7 +13,7 @@ export async function GET(req: NextRequest) {
     if (age < 5 * 60 * 1000) return NextResponse.json(cached);
   }
 
-  const price = await fetchCurrentPrice(ticker);
+  const price = await fetchCurrentPriceWithATR(ticker);
   if (!price) return NextResponse.json({ error: "Price not found" }, { status: 404 });
 
   store.setPrices({ [ticker]: price });

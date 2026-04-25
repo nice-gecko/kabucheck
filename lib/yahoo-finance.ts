@@ -17,7 +17,6 @@ export async function fetchCurrentPrice(ticker: string): Promise<CurrentPrice | 
     const price = closes.filter(Boolean).at(-1);
     if (!price) return null;
 
-    // Previous close for change %
     const prevClose: number = result.meta?.previousClose ?? price;
     const change = parseFloat(((price - prevClose) / prevClose * 100).toFixed(2));
 
@@ -27,8 +26,56 @@ export async function fetchCurrentPrice(ticker: string): Promise<CurrentPrice | 
   }
 }
 
+// Fetch ATR (Average True Range, 14 days) alongside current price
+export async function fetchCurrentPriceWithATR(ticker: string): Promise<(CurrentPrice & { atr: number | null }) | null> {
+  try {
+    // Fetch 30 days of daily OHLC data to calculate 14-day ATR
+    const url = `https://query1.finance.yahoo.com/v8/finance/chart/${ticker}?range=30d&interval=1d`;
+    const res = await fetch(url, {
+      signal: AbortSignal.timeout(8000),
+      headers: { "User-Agent": "Mozilla/5.0" },
+    });
+    if (!res.ok) return null;
+    const data = await res.json();
+    const result = data?.chart?.result?.[0];
+    if (!result) return null;
+
+    const quote = result.indicators?.quote?.[0];
+    const highs:  number[] = quote?.high  ?? [];
+    const lows:   number[] = quote?.low   ?? [];
+    const closes: number[] = quote?.close ?? [];
+
+    // Current price
+    const price = closes.filter(Boolean).at(-1);
+    if (!price) return null;
+    const prevClose: number = result.meta?.previousClose ?? price;
+    const change = parseFloat(((price - prevClose) / prevClose * 100).toFixed(2));
+
+    // ATR = average of True Range over last 14 days
+    // True Range = max(High-Low, |High-PrevClose|, |Low-PrevClose|)
+    const trValues: number[] = [];
+    for (let i = 1; i < closes.length; i++) {
+      if (!highs[i] || !lows[i] || !closes[i-1]) continue;
+      const tr = Math.max(
+        highs[i] - lows[i],
+        Math.abs(highs[i] - closes[i-1]),
+        Math.abs(lows[i]  - closes[i-1])
+      );
+      trValues.push(tr);
+    }
+    const last14 = trValues.slice(-14);
+    const atr = last14.length > 0
+      ? Math.round(last14.reduce((s, v) => s + v, 0) / last14.length)
+      : null;
+
+    return { ticker, price: Math.round(price), change, updatedAt: new Date().toISOString(), atr };
+  } catch {
+    return null;
+  }
+}
+
 export async function fetchPricesForTickers(tickers: string[]): Promise<Record<string, CurrentPrice>> {
-  const unique = [...new Set(tickers)];
+  const unique = Array.from(new Set(tickers));
   const results = await Promise.allSettled(unique.map(t => fetchCurrentPrice(t)));
   const map: Record<string, CurrentPrice> = {};
   results.forEach((r, i) => {
