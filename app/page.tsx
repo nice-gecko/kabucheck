@@ -246,27 +246,77 @@ async function analyzeLatest(user: User, hitInfo: ReturnType<typeof calcHitRate>
 function PricePanel({ post }: { post: Post }) {
   const w = useWindowWidth();
   const isMobile = w < 520;
-  const cur = CURRENT_PRICES[post.ticker];
+  const [livePrice, setLivePrice] = useState<{price:number,change:number}|null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // Yahoo Finance APIでリアルタイム株価取得
+    const fetchPrice = async () => {
+      try {
+        const url = `https://query1.finance.yahoo.com/v8/finance/chart/${post.ticker}?range=1d&interval=1m`;
+        const res = await fetch(`https://corsproxy.io/?${encodeURIComponent(url)}`);
+        const data = await res.json();
+        const result = data?.chart?.result?.[0];
+        if (!result) throw new Error("no data");
+        const closes: number[] = result.indicators?.quote?.[0]?.close ?? [];
+        const price = closes.filter(Boolean).at(-1);
+        const prevClose: number = result.meta?.previousClose ?? price;
+        if (price) {
+          setLivePrice({ price: Math.round(price), change: parseFloat(((price - prevClose) / prevClose * 100).toFixed(2)) });
+        }
+      } catch {
+        // フォールバック：デモデータ
+        const demo = CURRENT_PRICES[post.ticker];
+        if (demo) setLivePrice(demo);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchPrice();
+  }, [post.ticker]);
+
+  const cur = livePrice ?? CURRENT_PRICES[post.ticker];
   const isUp = post.direction === "up";
-  const cp = cur?.price;
+  const cp = cur?.price ?? null;
   const tp = post.targetPrice;
-  const dipBuy = cp ? (isUp ? Math.round(cp * 0.962) : Math.round(cp * 1.038)) : null;
+  const dipBuy   = cp ? (isUp ? Math.round(cp * 0.962) : Math.round(cp * 1.038)) : null;
   const stopLoss = cp ? (isUp ? Math.round(cp * 0.925) : Math.round(cp * 1.075)) : null;
   const upsidePct = cp && tp ? (((tp - cp) / cp) * 100).toFixed(1) : null;
+
   const cols = [
-    { label: "現在値", icon: "📊", value: cp ? `¥${cp.toLocaleString()}` : "—", sub: cur ? `${cur.change >= 0 ? "+" : ""}${cur.change}%` : "", subColor: cur ? (cur.change >= 0 ? C.green : C.red) : C.textLight, bg: "#f8f8f6", border: C.border, labelColor: C.textMid, valueColor: C.text },
-    { label: "目標価格", icon: "🎯", value: tp ? `¥${tp.toLocaleString()}` : "—", sub: upsidePct ? `${isUp ? "+" : ""}${upsidePct}%` : "", subColor: isUp ? C.green : C.red, bg: isUp ? C.greenSoft : C.redSoft, border: isUp ? `${C.green}40` : `${C.red}40`, labelColor: isUp ? C.green : C.red, valueColor: isUp ? C.green : C.red },
-    { label: isUp ? "押し目買い" : "戻り売り", icon: isUp ? "📉" : "📈", value: dipBuy ? `¥${dipBuy.toLocaleString()}` : "—", sub: cp && dipBuy ? `現在比 ${((dipBuy - cp) / cp * 100).toFixed(1)}%` : "", subColor: C.accent, bg: C.accentSoft, border: `${C.accent}40`, labelColor: C.accent, valueColor: C.accent },
-    { label: "撤退価格", icon: "🛑", value: stopLoss ? `¥${stopLoss.toLocaleString()}` : "—", sub: cp && stopLoss ? `現在比 ${((stopLoss - cp) / cp * 100).toFixed(1)}%` : "", subColor: C.red, bg: "#fff8f8", border: `${C.red}30`, labelColor: C.red, valueColor: C.red },
+    { label: "現在値", icon: "📊",
+      value: loading ? "取得中…" : cp ? `¥${cp.toLocaleString()}` : "—",
+      sub: cur ? `${cur.change >= 0 ? "+" : ""}${cur.change}%` : "",
+      subColor: cur ? (cur.change >= 0 ? C.green : C.red) : C.textLight,
+      bg: "#f8f8f6", border: C.border, labelColor: C.textMid, valueColor: C.text },
+    { label: "目標価格", icon: "🎯",
+      value: tp ? `¥${tp.toLocaleString()}` : "—",
+      sub: upsidePct ? `${isUp ? "+" : ""}${upsidePct}%` : "",
+      subColor: isUp ? C.green : C.red,
+      bg: isUp ? C.greenSoft : C.redSoft, border: isUp ? `${C.green}40` : `${C.red}40`,
+      labelColor: isUp ? C.green : C.red, valueColor: isUp ? C.green : C.red },
+    { label: isUp ? "押し目買い" : "戻り売り", icon: isUp ? "📉" : "📈",
+      value: dipBuy ? `¥${dipBuy.toLocaleString()}` : "—",
+      sub: cp && dipBuy ? `現在比 ${((dipBuy - cp) / cp * 100).toFixed(1)}%` : "",
+      subColor: C.accent, bg: C.accentSoft, border: `${C.accent}40`, labelColor: C.accent, valueColor: C.accent },
+    { label: "撤退価格", icon: "🛑",
+      value: stopLoss ? `¥${stopLoss.toLocaleString()}` : "—",
+      sub: cp && stopLoss ? `現在比 ${((stopLoss - cp) / cp * 100).toFixed(1)}%` : "",
+      subColor: C.red, bg: "#fff8f8", border: `${C.red}30`, labelColor: C.red, valueColor: C.red },
   ];
+
   return (
-    <div style={{ display: "grid", gridTemplateColumns: isMobile ? "repeat(2,1fr)" : "repeat(4,1fr)", gap: 8, marginTop: 12, marginBottom: 4 }}>
+    <div style={{ display: "grid", gridTemplateColumns: isMobile ? "repeat(2,1fr)" : "repeat(4,1fr)", gap: 6, marginTop: 8, marginBottom: 4 }}>
       {cols.map((col, i) => (
-        <div key={i} style={{ background: col.bg, border: `1px solid ${col.border}`, borderRadius: 10, padding: isMobile ? "9px 8px" : "10px 12px", textAlign: "center" }}>
-          <div style={{ fontSize: 11, marginBottom: 2 }}>{col.icon}</div>
-          <div style={{ fontSize: 9, color: col.labelColor, fontWeight: 700, letterSpacing: 0.2, marginBottom: 3 }}>{col.label}</div>
-          <div style={{ fontFamily: "'DM Sans',sans-serif", fontSize: isMobile ? 12 : 14, fontWeight: 800, color: col.valueColor, lineHeight: 1 }}>{col.value}</div>
-          {col.sub && <div style={{ fontSize: 9, color: col.subColor, marginTop: 3, fontWeight: 600 }}>{col.sub}</div>}
+        <div key={i} style={{ background: col.bg, border: `1px solid ${col.border}`, borderRadius: 10, padding: isMobile ? "8px 6px" : "8px 10px", textAlign: "center" }}>
+          {/* 上段：アイコン・名称・比率 */}
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 4, marginBottom: 6 }}>
+            <span style={{ fontSize: 11 }}>{col.icon}</span>
+            <span style={{ fontSize: 9, color: col.labelColor, fontWeight: 700 }}>{col.label}</span>
+            {col.sub && <span style={{ fontSize: 9, color: col.subColor, fontWeight: 700 }}>{col.sub}</span>}
+          </div>
+          {/* 下段：価格 */}
+          <div style={{ fontFamily: "'DM Sans',sans-serif", fontSize: isMobile ? 13 : 15, fontWeight: 800, color: col.valueColor, lineHeight: 1 }}>{col.value}</div>
         </div>
       ))}
     </div>
@@ -303,7 +353,7 @@ function PastRow({ post }: { post: Post }) {
   return (
     <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "7px 10px", background: ev.result === "hit" ? C.greenSoft : ev.result === "miss" ? C.redSoft : "#f4f3f0", borderRadius: 7, marginBottom: 5, border: `1px solid ${color}20`, flexWrap: "wrap" }}>
       <span style={{ fontSize: 10, color: C.textLight, flexShrink: 0 }}>{post.date}</span>
-      <a href={`https://www.rakuten-sec.co.jp/web/market/search/?q=${post.ticker.replace(".T", "")}`} target="_blank" rel="noopener noreferrer" style={{ fontSize: 12, color: C.text, fontWeight: 600, flex: 1, minWidth: 80, textDecoration: "none", borderBottom: `1px solid ${C.accent}50` }}>{post.company}</a>
+      <a href={`https://finance.yahoo.co.jp/quote/${post.ticker}`} target="_blank" rel="noopener noreferrer" style={{ fontSize: 12, color: C.text, fontWeight: 600, flex: 1, minWidth: 80, textDecoration: "none", borderBottom: `1px solid ${C.accent}50` }}>{post.company}</a>
       <DirectionTag dir={post.direction} />
       <span style={{ fontSize: 11, fontWeight: 700, color, background: `${color}15`, padding: "1px 8px", borderRadius: 10, flexShrink: 0 }}>{ev.result === "hit" ? "✓ 的中" : ev.result === "miss" ? "✗ 外れ" : "検証中"}</span>
       {"changePct" in ev && ev.changePct && <span style={{ fontSize: 11, color: Number(ev.changePct) >= 0 ? C.green : C.red, fontWeight: 700, flexShrink: 0 }}>{Number(ev.changePct) >= 0 ? "+" : ""}{ev.changePct}%</span>}
@@ -319,7 +369,6 @@ function PickCard({ user, rank }: { user: User; rank: number }) {
   const hitInfo = calcHitRate(user);
   const latest = user.posts.find(p => p.isLatest);
   const pastPosts = user.posts.filter(p => !p.isLatest);
-  const cur = latest ? CURRENT_PRICES[latest.ticker] : null;
 
   async function handleAI() {
     if (ai) { setOpen(o => !o); return; }
@@ -354,20 +403,14 @@ function PickCard({ user, rank }: { user: User; rank: number }) {
               <DirectionTag dir={latest.direction} />
             </div>
             <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap", marginBottom: 2 }}>
-              <a href={`https://www.rakuten-sec.co.jp/web/market/search/?q=${latest.ticker.replace(".T", "")}`} target="_blank" rel="noopener noreferrer" title="楽天証券で見る"
+              <a href={`https://finance.yahoo.co.jp/quote/${latest.ticker}`} target="_blank" rel="noopener noreferrer" title="楽天証券で見る"
                 style={{ fontFamily: "'DM Sans',sans-serif", fontWeight: 800, fontSize: 19, color: C.text, lineHeight: 1, textDecoration: "none", borderBottom: `2px solid ${C.accent}60`, paddingBottom: 1 }}
                 onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.color = C.accent; }}
                 onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.color = C.text; }}>{latest.company}</a>
-              <a href={`https://www.rakuten-sec.co.jp/web/market/search/?q=${latest.ticker.replace(".T","")}`} target="_blank" rel="noopener noreferrer"
-                style={{ fontSize: 11, color: "#bf0000", background: "#fff0f0", padding: "2px 10px", borderRadius: 8, textDecoration: "none", border: "1px solid #bf000030", fontWeight: 700 }}>楽天証券 🔗</a>
+              <a href={`https://finance.yahoo.co.jp/quote/${latest.ticker}`} target="_blank" rel="noopener noreferrer"
+                style={{ fontSize: 11, color: "#6e1ca8", background: "#f7f0ff", padding: "2px 10px", borderRadius: 8, textDecoration: "none", border: "1px solid #6e1ca830", fontWeight: 700 }}>Yahoo!株価 📊</a>
               <a href={`https://jp.tradingview.com/chart/?symbol=TSE:${latest.ticker.replace(".T","")}`} target="_blank" rel="noopener noreferrer"
                 style={{ fontSize: 11, color: "#1c6ef3", background: "#eef3ff", padding: "2px 10px", borderRadius: 8, textDecoration: "none", border: "1px solid #1c6ef330", fontWeight: 700 }}>TradingView 📈</a>
-              {cur && (
-                <div style={{ display: "flex", alignItems: "center", gap: 5, background: cur.change >= 0 ? "#e6f7f0" : "#fceaea", border: `1px solid ${cur.change >= 0 ? C.green : C.red}40`, borderRadius: 20, padding: "3px 10px" }}>
-                  <span style={{ fontFamily: "'DM Sans',sans-serif", fontWeight: 800, fontSize: 14, color: cur.change >= 0 ? C.green : C.red }}>¥{cur.price.toLocaleString()}</span>
-                  <span style={{ fontSize: 11, fontWeight: 700, color: cur.change >= 0 ? C.green : C.red }}>{cur.change >= 0 ? "+" : ""}{cur.change}%</span>
-                </div>
-              )}
             </div>
             <PricePanel post={latest} />
             <p style={{ fontSize: 13, color: C.textMid, lineHeight: 1.65, margin: "10px 0 8px" }}>{latest.text}</p>
