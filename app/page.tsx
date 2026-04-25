@@ -58,133 +58,133 @@ interface User {
 
 const DEMO_USERS: User[] = [
   { id:1, handle:"@kabu_master_jp", name:"株マスター", avatar:"KM", avatarColor:"#3b7dd8", followers:84200, posts:[
-    {id:"p1",date:"2025-02-20",ticker:"7203.T",company:"トヨタ自動車",direction:"up",targetPrice:3200,predictionDate:"2025-02-20",resultDate:"2025-03-31",likes:1840,retweets:620,replies:210,text:"トヨタ、決算好調で3月末までに3,200円到達！半導体不足解消＋EV好調💹"},
-    {id:"p2",date:"2025-03-05",ticker:"6758.T",company:"ソニーグループ",direction:"up",targetPrice:4800,predictionDate:"2025-03-05",resultDate:"2025-04-05",likes:2100,retweets:880,replies:340,text:"ソニー、PS5供給改善で年度末4,800円へ"},
-    {id:"p3",date:"2025-03-18",ticker:"9984.T",company:"ソフトバンクG",direction:"down",targetPrice:8000,predictionDate:"2025-03-18",resultDate:"2025-04-18",likes:980,retweets:310,replies:150,text:"ソフトバンクG、AI投資過熱で一時調整"},
-    {id:"p4",date:"2025-04-20",ticker:"6861.T",company:"キーエンス",direction:"up",targetPrice:72000,predictionDate:"2025-04-20",resultDate:"2025-05-20",likes:2400,retweets:940,replies:380,text:"キーエンス、FA需要回復鮮明。製造業設備投資拡大で72,000円へ。今なら68,000円台が絶好の買い場📈",isLatest:true},
+    {id:"p1",date:"2026-02-20",ticker:"7203.T",company:"トヨタ自動車",direction:"up",targetPrice:3200,predictionDate:"2026-02-20",resultDate:"2026-03-31",likes:1840,retweets:620,replies:210,text:"トヨタ、決算好調で3月末までに3,200円到達！半導体不足解消＋EV好調💹"},
+    {id:"p2",date:"2026-03-05",ticker:"6758.T",company:"ソニーグループ",direction:"up",targetPrice:4800,predictionDate:"2026-03-05",resultDate:"2026-04-05",likes:2100,retweets:880,replies:340,text:"ソニー、PS5供給改善で年度末4,800円へ"},
+    {id:"p3",date:"2026-03-18",ticker:"9984.T",company:"ソフトバンクG",direction:"down",targetPrice:8000,predictionDate:"2026-03-18",resultDate:"2026-04-18",likes:980,retweets:310,replies:150,text:"ソフトバンクG、AI投資過熱で一時調整"},
+    {id:"p4",date:"2026-04-20",ticker:"6861.T",company:"キーエンス",direction:"up",targetPrice:72000,predictionDate:"2026-04-20",resultDate:"2026-05-20",likes:2400,retweets:940,replies:380,text:"キーエンス、FA需要回復鮮明。製造業設備投資拡大で72,000円へ。今なら68,000円台が絶好の買い場📈",isLatest:true},
   ]},
   { id:2, handle:"@nikkei_analyst", name:"日経アナリスト", avatar:"NA", avatarColor:"#1e9e6a", followers:61500, posts:[
-    {id:"p5",date:"2025-02-25",ticker:"6501.T",company:"日立製作所",direction:"up",targetPrice:10500,predictionDate:"2025-02-25",resultDate:"2025-03-25",likes:1320,retweets:490,replies:180,text:"日立、インフラDX需要で3月中に10,500円到達"},
-    {id:"p6",date:"2025-03-10",ticker:"8306.T",company:"三菱UFJ",direction:"up",targetPrice:1800,predictionDate:"2025-03-10",resultDate:"2025-04-10",likes:2800,retweets:1100,replies:420,text:"三菱UFJ、金利上昇で銀行株に追い風。1,800円超えも視野"},
-    {id:"p7",date:"2025-03-22",ticker:"7267.T",company:"ホンダ",direction:"down",targetPrice:1400,predictionDate:"2025-03-22",resultDate:"2025-04-22",likes:670,retweets:240,replies:130,text:"ホンダ、EV遅れで短期調整。1,400円まで下落リスク"},
-    {id:"p8",date:"2025-04-18",ticker:"8306.T",company:"三菱UFJ",direction:"up",targetPrice:2000,predictionDate:"2025-04-18",resultDate:"2025-05-18",likes:3100,retweets:1280,replies:510,text:"三菱UFJ再び注目。日銀追加利上げ観測で1,880円以下は強い買い場💰",isLatest:true},
+    {id:"p5",date:"2026-02-25",ticker:"6501.T",company:"日立製作所",direction:"up",targetPrice:10500,predictionDate:"2026-02-25",resultDate:"2026-03-25",likes:1320,retweets:490,replies:180,text:"日立、インフラDX需要で3月中に10,500円到達"},
+    {id:"p6",date:"2026-03-10",ticker:"8306.T",company:"三菱UFJ",direction:"up",targetPrice:1800,predictionDate:"2026-03-10",resultDate:"2026-04-10",likes:2800,retweets:1100,replies:420,text:"三菱UFJ、金利上昇で銀行株に追い風。1,800円超えも視野"},
+    {id:"p7",date:"2026-03-22",ticker:"7267.T",company:"ホンダ",direction:"down",targetPrice:1400,predictionDate:"2026-03-22",resultDate:"2026-04-22",likes:670,retweets:240,replies:130,text:"ホンダ、EV遅れで短期調整。1,400円まで下落リスク"},
+    {id:"p8",date:"2026-04-18",ticker:"8306.T",company:"三菱UFJ",direction:"up",targetPrice:2000,predictionDate:"2026-04-18",resultDate:"2026-05-18",likes:3100,retweets:1280,replies:510,text:"三菱UFJ再び注目。日銀追加利上げ観測で1,880円以下は強い買い場💰",isLatest:true},
   ]},
   { id:3, handle:"@toushi_sensei", name:"投資先生🎓", avatar:"TS", avatarColor:"#7c3aed", followers:52300, posts:[
-    {id:"p9",date:"2025-02-28",ticker:"6367.T",company:"ダイキン工業",direction:"up",targetPrice:24000,predictionDate:"2025-02-28",resultDate:"2025-03-28",likes:890,retweets:310,replies:97,text:"ダイキン、空調世界需要で24,000円予想！"},
-    {id:"p10",date:"2025-03-15",ticker:"4063.T",company:"信越化学工業",direction:"up",targetPrice:6000,predictionDate:"2025-03-15",resultDate:"2025-04-15",likes:1540,retweets:560,replies:200,text:"信越化学、半導体シリコン需要回復で6,000円へ反発"},
-    {id:"p11",date:"2025-04-01",ticker:"2413.T",company:"エムスリー",direction:"down",targetPrice:1800,predictionDate:"2025-04-01",resultDate:"2025-04-25",likes:430,retweets:140,replies:72,text:"エムスリー、医療DX鈍化で1,800円割れリスク"},
-    {id:"p12",date:"2025-04-22",ticker:"4063.T",company:"信越化学工業",direction:"up",targetPrice:6500,predictionDate:"2025-04-22",resultDate:"2025-05-22",likes:1980,retweets:720,replies:290,text:"信越化学、AI向け半導体材料の需要爆発中。5,800円台が仕込みチャンス。6,500円目標🔬",isLatest:true},
+    {id:"p9",date:"2026-02-28",ticker:"6367.T",company:"ダイキン工業",direction:"up",targetPrice:24000,predictionDate:"2026-02-28",resultDate:"2026-03-28",likes:890,retweets:310,replies:97,text:"ダイキン、空調世界需要で24,000円予想！"},
+    {id:"p10",date:"2026-03-15",ticker:"4063.T",company:"信越化学工業",direction:"up",targetPrice:6000,predictionDate:"2026-03-15",resultDate:"2026-04-15",likes:1540,retweets:560,replies:200,text:"信越化学、半導体シリコン需要回復で6,000円へ反発"},
+    {id:"p11",date:"2026-04-01",ticker:"2413.T",company:"エムスリー",direction:"down",targetPrice:1800,predictionDate:"2026-04-01",resultDate:"2026-04-25",likes:430,retweets:140,replies:72,text:"エムスリー、医療DX鈍化で1,800円割れリスク"},
+    {id:"p12",date:"2026-04-22",ticker:"4063.T",company:"信越化学工業",direction:"up",targetPrice:6500,predictionDate:"2026-04-22",resultDate:"2026-05-22",likes:1980,retweets:720,replies:290,text:"信越化学、AI向け半導体材料の需要爆発中。5,800円台が仕込みチャンス。6,500円目標🔬",isLatest:true},
   ]},
   { id:4, handle:"@bulls_market99", name:"BullsMarket", avatar:"BM", avatarColor:"#d97706", followers:38700, posts:[
-    {id:"p13",date:"2025-03-01",ticker:"9432.T",company:"NTT",direction:"up",targetPrice:190,predictionDate:"2025-03-01",resultDate:"2025-04-01",likes:1100,retweets:380,replies:140,text:"NTT、通信インフラ強化で190円到達予想📡"},
-    {id:"p14",date:"2025-03-20",ticker:"6902.T",company:"デンソー",direction:"up",targetPrice:2500,predictionDate:"2025-03-20",resultDate:"2025-04-20",likes:760,retweets:290,replies:88,text:"デンソー、車載半導体回復で2,500円超え"},
-    {id:"p15",date:"2025-04-19",ticker:"6857.T",company:"アドバンテスト",direction:"up",targetPrice:8000,predictionDate:"2025-04-19",resultDate:"2025-05-19",likes:2200,retweets:860,replies:340,text:"アドバンテスト、AI半導体テスト受注残が過去最高水準。7,200円以下は押し目買い🎯",isLatest:true},
+    {id:"p13",date:"2026-03-01",ticker:"9432.T",company:"NTT",direction:"up",targetPrice:190,predictionDate:"2026-03-01",resultDate:"2026-04-01",likes:1100,retweets:380,replies:140,text:"NTT、通信インフラ強化で190円到達予想📡"},
+    {id:"p14",date:"2026-03-20",ticker:"6902.T",company:"デンソー",direction:"up",targetPrice:2500,predictionDate:"2026-03-20",resultDate:"2026-04-20",likes:760,retweets:290,replies:88,text:"デンソー、車載半導体回復で2,500円超え"},
+    {id:"p15",date:"2026-04-19",ticker:"6857.T",company:"アドバンテスト",direction:"up",targetPrice:8000,predictionDate:"2026-04-19",resultDate:"2026-05-19",likes:2200,retweets:860,replies:340,text:"アドバンテスト、AI半導体テスト受注残が過去最高水準。7,200円以下は押し目買い🎯",isLatest:true},
   ]},
   { id:5, handle:"@yuriko_invest", name:"ゆりこ@主婦投資家", avatar:"YI", avatarColor:"#e11d7a", followers:29100, posts:[
-    {id:"p16",date:"2025-03-03",ticker:"8411.T",company:"みずほFG",direction:"up",targetPrice:3600,predictionDate:"2025-03-03",resultDate:"2025-04-03",likes:2200,retweets:940,replies:380,text:"みずほFG、配当利回り高く割安。3,600円まで上昇余地あり💰"},
-    {id:"p17",date:"2025-03-25",ticker:"7751.T",company:"キヤノン",direction:"up",targetPrice:4500,predictionDate:"2025-03-25",resultDate:"2025-04-25",likes:880,retweets:310,replies:120,text:"キヤノン、カメラ需要回復で4,500円予想"},
-    {id:"p18",date:"2025-04-21",ticker:"2914.T",company:"JT（日本たばこ）",direction:"up",targetPrice:4800,predictionDate:"2025-04-21",resultDate:"2025-05-21",likes:1640,retweets:580,replies:230,text:"JT、円安メリット＋高配当の安定感。4,400円台での仕込みが正解。長期でも◎💐",isLatest:true},
+    {id:"p16",date:"2026-03-03",ticker:"8411.T",company:"みずほFG",direction:"up",targetPrice:3600,predictionDate:"2026-03-03",resultDate:"2026-04-03",likes:2200,retweets:940,replies:380,text:"みずほFG、配当利回り高く割安。3,600円まで上昇余地あり💰"},
+    {id:"p17",date:"2026-03-25",ticker:"7751.T",company:"キヤノン",direction:"up",targetPrice:4500,predictionDate:"2026-03-25",resultDate:"2026-04-25",likes:880,retweets:310,replies:120,text:"キヤノン、カメラ需要回復で4,500円予想"},
+    {id:"p18",date:"2026-04-21",ticker:"2914.T",company:"JT（日本たばこ）",direction:"up",targetPrice:4800,predictionDate:"2026-04-21",resultDate:"2026-05-21",likes:1640,retweets:580,replies:230,text:"JT、円安メリット＋高配当の安定感。4,400円台での仕込みが正解。長期でも◎💐",isLatest:true},
   ]},
   { id:6, handle:"@short_hunter_fx", name:"ショートハンター", avatar:"SH", avatarColor:"#dc2626", followers:24600, posts:[
-    {id:"p19",date:"2025-02-22",ticker:"4689.T",company:"LINEヤフー",direction:"down",targetPrice:400,predictionDate:"2025-02-22",resultDate:"2025-03-22",likes:1680,retweets:720,replies:290,text:"LINEヤフー、個人情報問題長期化で400円台へ下落"},
-    {id:"p20",date:"2025-03-12",ticker:"6098.T",company:"リクルートHD",direction:"down",targetPrice:9000,predictionDate:"2025-03-12",resultDate:"2025-04-12",likes:920,retweets:340,replies:160,text:"リクルート、人材市場鈍化で9,000円まで調整リスク"},
-    {id:"p21",date:"2025-04-20",ticker:"9983.T",company:"ファーストリテイリング",direction:"down",targetPrice:38000,predictionDate:"2025-04-20",resultDate:"2025-05-20",likes:1880,retweets:760,replies:320,text:"ユニクロ、中国消費低迷＋円高反転リスクで調整必至。42,000円超えはショートのチャンス⚠️",isLatest:true},
+    {id:"p19",date:"2026-02-22",ticker:"4689.T",company:"LINEヤフー",direction:"down",targetPrice:400,predictionDate:"2026-02-22",resultDate:"2026-03-22",likes:1680,retweets:720,replies:290,text:"LINEヤフー、個人情報問題長期化で400円台へ下落"},
+    {id:"p20",date:"2026-03-12",ticker:"6098.T",company:"リクルートHD",direction:"down",targetPrice:9000,predictionDate:"2026-03-12",resultDate:"2026-04-12",likes:920,retweets:340,replies:160,text:"リクルート、人材市場鈍化で9,000円まで調整リスク"},
+    {id:"p21",date:"2026-04-20",ticker:"9983.T",company:"ファーストリテイリング",direction:"down",targetPrice:38000,predictionDate:"2026-04-20",resultDate:"2026-05-20",likes:1880,retweets:760,replies:320,text:"ユニクロ、中国消費低迷＋円高反転リスクで調整必至。42,000円超えはショートのチャンス⚠️",isLatest:true},
   ]},
   { id:7, handle:"@ai_kabu_bot", name:"AI株分析bot🤖", avatar:"AI", avatarColor:"#0891b2", followers:19800, posts:[
-    {id:"p22",date:"2025-03-08",ticker:"6723.T",company:"ルネサス",direction:"up",targetPrice:3000,predictionDate:"2025-03-08",resultDate:"2025-04-08",likes:540,retweets:180,replies:60,text:"ルネサス、車載MCU好調で3,000円到達"},
-    {id:"p23",date:"2025-03-28",ticker:"6857.T",company:"アドバンテスト",direction:"up",targetPrice:7500,predictionDate:"2025-03-28",resultDate:"2025-04-25",likes:1200,retweets:460,replies:190,text:"アドバンテスト、AI半導体テスト需要で7,500円超え予想"},
-    {id:"p24",date:"2025-04-23",ticker:"6920.T",company:"レーザーテック",direction:"up",targetPrice:22000,predictionDate:"2025-04-23",resultDate:"2025-05-23",likes:1340,retweets:510,replies:200,text:"レーザーテック、EUV関連受注が急回復。18,000円台は支持帯。22,000円まで上昇余力あり📊",isLatest:true},
+    {id:"p22",date:"2026-03-08",ticker:"6723.T",company:"ルネサス",direction:"up",targetPrice:3000,predictionDate:"2026-03-08",resultDate:"2026-04-08",likes:540,retweets:180,replies:60,text:"ルネサス、車載MCU好調で3,000円到達"},
+    {id:"p23",date:"2026-03-28",ticker:"6857.T",company:"アドバンテスト",direction:"up",targetPrice:7500,predictionDate:"2026-03-28",resultDate:"2026-04-25",likes:1200,retweets:460,replies:190,text:"アドバンテスト、AI半導体テスト需要で7,500円超え予想"},
+    {id:"p24",date:"2026-04-23",ticker:"6920.T",company:"レーザーテック",direction:"up",targetPrice:22000,predictionDate:"2026-04-23",resultDate:"2026-05-23",likes:1340,retweets:510,replies:200,text:"レーザーテック、EUV関連受注が急回復。18,000円台は支持帯。22,000円まで上昇余力あり📊",isLatest:true},
   ]},
   { id:8, handle:"@value_trap_jp", name:"バリュートラップ", avatar:"VT", avatarColor:"#16a34a", followers:16200, posts:[
-    {id:"p25",date:"2025-03-05",ticker:"5108.T",company:"ブリヂストン",direction:"up",targetPrice:5800,predictionDate:"2025-03-05",resultDate:"2025-04-05",likes:430,retweets:150,replies:55,text:"ブリヂストン、タイヤ需要安定で5,500円割れで買い場"},
-    {id:"p26",date:"2025-04-05",ticker:"7270.T",company:"SUBARU",direction:"up",targetPrice:4000,predictionDate:"2025-04-05",resultDate:"2025-04-25",likes:310,retweets:100,replies:40,text:"SUBARU、SUV需要で4,000円台回復へ"},
-    {id:"p27",date:"2025-04-22",ticker:"8058.T",company:"三菱商事",direction:"up",targetPrice:3200,predictionDate:"2025-04-22",resultDate:"2025-05-22",likes:980,retweets:340,replies:140,text:"三菱商事、バフェット効果継続＋資源高で2,800円台は長期バリュー買い。3,200円中期目標🏢",isLatest:true},
+    {id:"p25",date:"2026-03-05",ticker:"5108.T",company:"ブリヂストン",direction:"up",targetPrice:5800,predictionDate:"2026-03-05",resultDate:"2026-04-05",likes:430,retweets:150,replies:55,text:"ブリヂストン、タイヤ需要安定で5,500円割れで買い場"},
+    {id:"p26",date:"2026-04-05",ticker:"7270.T",company:"SUBARU",direction:"up",targetPrice:4000,predictionDate:"2026-04-05",resultDate:"2026-04-25",likes:310,retweets:100,replies:40,text:"SUBARU、SUV需要で4,000円台回復へ"},
+    {id:"p27",date:"2026-04-22",ticker:"8058.T",company:"三菱商事",direction:"up",targetPrice:3200,predictionDate:"2026-04-22",resultDate:"2026-05-22",likes:980,retweets:340,replies:140,text:"三菱商事、バフェット効果継続＋資源高で2,800円台は長期バリュー買い。3,200円中期目標🏢",isLatest:true},
   ]},
   { id:9, handle:"@makoto_kabu", name:"マコト株道場", avatar:"MK", avatarColor:"#7c3aed", followers:12400, posts:[
-    {id:"p28",date:"2025-03-15",ticker:"9022.T",company:"JR東海",direction:"up",targetPrice:4500,predictionDate:"2025-03-15",resultDate:"2025-04-15",likes:680,retweets:240,replies:90,text:"JR東海、インバウンド回復で4,500円超え予想🚄"},
-    {id:"p29",date:"2025-04-21",ticker:"9020.T",company:"JR東日本",direction:"up",targetPrice:3000,predictionDate:"2025-04-21",resultDate:"2025-05-21",likes:820,retweets:290,replies:110,text:"JR東日本、外国人観光客過去最高水準。2,600円台は押し目。Suica拡大も材料に🚃",isLatest:true},
+    {id:"p28",date:"2026-03-15",ticker:"9022.T",company:"JR東海",direction:"up",targetPrice:4500,predictionDate:"2026-03-15",resultDate:"2026-04-15",likes:680,retweets:240,replies:90,text:"JR東海、インバウンド回復で4,500円超え予想🚄"},
+    {id:"p29",date:"2026-04-21",ticker:"9020.T",company:"JR東日本",direction:"up",targetPrice:3000,predictionDate:"2026-04-21",resultDate:"2026-05-21",likes:820,retweets:290,replies:110,text:"JR東日本、外国人観光客過去最高水準。2,600円台は押し目。Suica拡大も材料に🚃",isLatest:true},
   ]},
   { id:10, handle:"@growth_seeker", name:"グロース株ハンター", avatar:"GS", avatarColor:"#db2777", followers:9800, posts:[
-    {id:"p30",date:"2025-03-18",ticker:"4478.T",company:"フリー",direction:"up",targetPrice:2000,predictionDate:"2025-03-18",resultDate:"2025-04-18",likes:380,retweets:120,replies:48,text:"フリー、中小DX加速で2,000円回復と予想"},
-    {id:"p31",date:"2025-04-24",ticker:"4385.T",company:"メルカリ",direction:"up",targetPrice:2800,predictionDate:"2025-04-24",resultDate:"2025-05-24",likes:1100,retweets:420,replies:170,text:"メルカリ、US事業黒字化が現実味。2,200円台は絶好の仕込み場。2,800円を目指す🛍️",isLatest:true},
+    {id:"p30",date:"2026-03-18",ticker:"4478.T",company:"フリー",direction:"up",targetPrice:2000,predictionDate:"2026-03-18",resultDate:"2026-04-18",likes:380,retweets:120,replies:48,text:"フリー、中小DX加速で2,000円回復と予想"},
+    {id:"p31",date:"2026-04-24",ticker:"4385.T",company:"メルカリ",direction:"up",targetPrice:2800,predictionDate:"2026-04-24",resultDate:"2026-05-24",likes:1100,retweets:420,replies:170,text:"メルカリ、US事業黒字化が現実味。2,200円台は絶好の仕込み場。2,800円を目指す🛍️",isLatest:true},
   ]},
   { id:11, handle:"@pension_trader", name:"年金運用マン", avatar:"PM", avatarColor:"#475569", followers:31800, posts:[
-    {id:"p32",date:"2025-02-18",ticker:"8316.T",company:"三井住友FG",direction:"up",targetPrice:9500,predictionDate:"2025-02-18",resultDate:"2025-03-18",likes:1240,retweets:460,replies:180,text:"三井住友FG、金利上昇メリット継続。配当も魅力。9,500円へ"},
-    {id:"p33",date:"2025-03-12",ticker:"4502.T",company:"武田薬品工業",direction:"up",targetPrice:4700,predictionDate:"2025-03-12",resultDate:"2025-04-12",likes:890,retweets:310,replies:120,text:"武田薬品、パイプライン充実で4,700円目標"},
-    {id:"p34",date:"2025-04-17",ticker:"8031.T",company:"三井物産",direction:"up",targetPrice:3600,predictionDate:"2025-04-17",resultDate:"2025-05-17",likes:1580,retweets:610,replies:240,text:"三井物産、LNG事業拡大と資源価格高止まりで3,600円へ。3,200円割れは強い買い場💼",isLatest:true},
+    {id:"p32",date:"2026-02-18",ticker:"8316.T",company:"三井住友FG",direction:"up",targetPrice:9500,predictionDate:"2026-02-18",resultDate:"2026-03-18",likes:1240,retweets:460,replies:180,text:"三井住友FG、金利上昇メリット継続。配当も魅力。9,500円へ"},
+    {id:"p33",date:"2026-03-12",ticker:"4502.T",company:"武田薬品工業",direction:"up",targetPrice:4700,predictionDate:"2026-03-12",resultDate:"2026-04-12",likes:890,retweets:310,replies:120,text:"武田薬品、パイプライン充実で4,700円目標"},
+    {id:"p34",date:"2026-04-17",ticker:"8031.T",company:"三井物産",direction:"up",targetPrice:3600,predictionDate:"2026-04-17",resultDate:"2026-05-17",likes:1580,retweets:610,replies:240,text:"三井物産、LNG事業拡大と資源価格高止まりで3,600円へ。3,200円割れは強い買い場💼",isLatest:true},
   ]},
   { id:12, handle:"@semiconductor_w", name:"半導体ウォッチャー", avatar:"SC", avatarColor:"#0f766e", followers:27400, posts:[
-    {id:"p35",date:"2025-02-20",ticker:"6857.T",company:"アドバンテスト",direction:"up",targetPrice:7000,predictionDate:"2025-02-20",resultDate:"2025-03-20",likes:1780,retweets:680,replies:270,text:"アドバンテスト、HBMテスト需要急増で7,000円射程に"},
-    {id:"p36",date:"2025-03-25",ticker:"6723.T",company:"ルネサス",direction:"up",targetPrice:2900,predictionDate:"2025-03-25",resultDate:"2025-04-25",likes:920,retweets:340,replies:130,text:"ルネサス、車載マイコン回復で2,900円目標"},
-    {id:"p37",date:"2025-04-21",ticker:"6146.T",company:"ディスコ",direction:"up",targetPrice:50000,predictionDate:"2025-04-21",resultDate:"2025-05-21",likes:2100,retweets:820,replies:340,text:"ディスコ、ダイシング装置の受注が爆増。AI半導体製造に必須。43,000円台は買い場。50,000円へ🔧",isLatest:true},
+    {id:"p35",date:"2026-02-20",ticker:"6857.T",company:"アドバンテスト",direction:"up",targetPrice:7000,predictionDate:"2026-02-20",resultDate:"2026-03-20",likes:1780,retweets:680,replies:270,text:"アドバンテスト、HBMテスト需要急増で7,000円射程に"},
+    {id:"p36",date:"2026-03-25",ticker:"6723.T",company:"ルネサス",direction:"up",targetPrice:2900,predictionDate:"2026-03-25",resultDate:"2026-04-25",likes:920,retweets:340,replies:130,text:"ルネサス、車載マイコン回復で2,900円目標"},
+    {id:"p37",date:"2026-04-21",ticker:"6146.T",company:"ディスコ",direction:"up",targetPrice:50000,predictionDate:"2026-04-21",resultDate:"2026-05-21",likes:2100,retweets:820,replies:340,text:"ディスコ、ダイシング装置の受注が爆増。AI半導体製造に必須。43,000円台は買い場。50,000円へ🔧",isLatest:true},
   ]},
   { id:13, handle:"@dividend_queen", name:"配当女王👑", avatar:"DQ", avatarColor:"#be185d", followers:22100, posts:[
-    {id:"p38",date:"2025-02-25",ticker:"9433.T",company:"KDDI",direction:"up",targetPrice:5000,predictionDate:"2025-02-25",resultDate:"2025-03-25",likes:1640,retweets:590,replies:220,text:"KDDI、安定配当＋通信料値上げで5,000円へ"},
-    {id:"p39",date:"2025-03-20",ticker:"8591.T",company:"オリックス",direction:"up",targetPrice:3400,predictionDate:"2025-03-20",resultDate:"2025-04-20",likes:1100,retweets:410,replies:160,text:"オリックス、多角化経営で安定。3,400円へ"},
-    {id:"p40",date:"2025-04-20",ticker:"9434.T",company:"ソフトバンク(通信)",direction:"up",targetPrice:2200,predictionDate:"2025-04-20",resultDate:"2025-05-20",likes:1820,retweets:680,replies:270,text:"ソフトバンク(通信)、配当利回り5%超え継続。2,000円割れは長期保有の絶好機💎",isLatest:true},
+    {id:"p38",date:"2026-02-25",ticker:"9433.T",company:"KDDI",direction:"up",targetPrice:5000,predictionDate:"2026-02-25",resultDate:"2026-03-25",likes:1640,retweets:590,replies:220,text:"KDDI、安定配当＋通信料値上げで5,000円へ"},
+    {id:"p39",date:"2026-03-20",ticker:"8591.T",company:"オリックス",direction:"up",targetPrice:3400,predictionDate:"2026-03-20",resultDate:"2026-04-20",likes:1100,retweets:410,replies:160,text:"オリックス、多角化経営で安定。3,400円へ"},
+    {id:"p40",date:"2026-04-20",ticker:"9434.T",company:"ソフトバンク(通信)",direction:"up",targetPrice:2200,predictionDate:"2026-04-20",resultDate:"2026-05-20",likes:1820,retweets:680,replies:270,text:"ソフトバンク(通信)、配当利回り5%超え継続。2,000円割れは長期保有の絶好機💎",isLatest:true},
   ]},
   { id:14, handle:"@intraday_king", name:"デイトレ王", avatar:"DK", avatarColor:"#b45309", followers:18600, posts:[
-    {id:"p41",date:"2025-03-03",ticker:"7203.T",company:"トヨタ自動車",direction:"up",targetPrice:3100,predictionDate:"2025-03-03",resultDate:"2025-03-17",likes:2300,retweets:890,replies:340,text:"トヨタ、決算発表前の仕込み。3,100円で利確予定"},
-    {id:"p42",date:"2025-03-28",ticker:"9984.T",company:"ソフトバンクG",direction:"up",targetPrice:9200,predictionDate:"2025-03-28",resultDate:"2025-04-11",likes:1800,retweets:690,replies:260,text:"ソフトバンクG、ARM上昇で連動。9,200円を短期目標"},
-    {id:"p43",date:"2025-04-23",ticker:"6758.T",company:"ソニーグループ",direction:"up",targetPrice:5200,predictionDate:"2025-04-23",resultDate:"2025-05-07",likes:2600,retweets:1020,replies:410,text:"ソニー決算前の仕込み。PS5＋映画好調で5,200円へ短期狙い。4,700円台が買い場📺",isLatest:true},
+    {id:"p41",date:"2026-03-03",ticker:"7203.T",company:"トヨタ自動車",direction:"up",targetPrice:3100,predictionDate:"2026-03-03",resultDate:"2026-03-17",likes:2300,retweets:890,replies:340,text:"トヨタ、決算発表前の仕込み。3,100円で利確予定"},
+    {id:"p42",date:"2026-03-28",ticker:"9984.T",company:"ソフトバンクG",direction:"up",targetPrice:9200,predictionDate:"2026-03-28",resultDate:"2026-04-11",likes:1800,retweets:690,replies:260,text:"ソフトバンクG、ARM上昇で連動。9,200円を短期目標"},
+    {id:"p43",date:"2026-04-23",ticker:"6758.T",company:"ソニーグループ",direction:"up",targetPrice:5200,predictionDate:"2026-04-23",resultDate:"2026-05-07",likes:2600,retweets:1020,replies:410,text:"ソニー決算前の仕込み。PS5＋映画好調で5,200円へ短期狙い。4,700円台が買い場📺",isLatest:true},
   ]},
   { id:15, handle:"@macro_bear_jp", name:"マクロベア🐻", avatar:"MB", avatarColor:"#991b1b", followers:15300, posts:[
-    {id:"p44",date:"2025-02-28",ticker:"9984.T",company:"ソフトバンクG",direction:"down",targetPrice:7500,predictionDate:"2025-02-28",resultDate:"2025-03-28",likes:1120,retweets:430,replies:180,text:"ソフトバンクG、過大評価。AIバブル崩壊で7,500円まで調整"},
-    {id:"p45",date:"2025-03-18",ticker:"6861.T",company:"キーエンス",direction:"down",targetPrice:60000,predictionDate:"2025-03-18",resultDate:"2025-04-18",likes:780,retweets:290,replies:120,text:"キーエンス、PER割高感。60,000円まで調整余地"},
-    {id:"p46",date:"2025-04-22",ticker:"4689.T",company:"LINEヤフー",direction:"down",targetPrice:340,predictionDate:"2025-04-22",resultDate:"2025-05-22",likes:1340,retweets:530,replies:220,text:"LINEヤフー、規制リスク継続で第2波下落。400円台からさらに340円へ。戻り売り推奨🐻",isLatest:true},
+    {id:"p44",date:"2026-02-28",ticker:"9984.T",company:"ソフトバンクG",direction:"down",targetPrice:7500,predictionDate:"2026-02-28",resultDate:"2026-03-28",likes:1120,retweets:430,replies:180,text:"ソフトバンクG、過大評価。AIバブル崩壊で7,500円まで調整"},
+    {id:"p45",date:"2026-03-18",ticker:"6861.T",company:"キーエンス",direction:"down",targetPrice:60000,predictionDate:"2026-03-18",resultDate:"2026-04-18",likes:780,retweets:290,replies:120,text:"キーエンス、PER割高感。60,000円まで調整余地"},
+    {id:"p46",date:"2026-04-22",ticker:"4689.T",company:"LINEヤフー",direction:"down",targetPrice:340,predictionDate:"2026-04-22",resultDate:"2026-05-22",likes:1340,retweets:530,replies:220,text:"LINEヤフー、規制リスク継続で第2波下落。400円台からさらに340円へ。戻り売り推奨🐻",isLatest:true},
   ]},
   { id:16, handle:"@esg_investor_jp", name:"ESG投資家🌱", avatar:"EG", avatarColor:"#15803d", followers:11700, posts:[
-    {id:"p47",date:"2025-03-05",ticker:"6981.T",company:"村田製作所",direction:"up",targetPrice:3200,predictionDate:"2025-03-05",resultDate:"2025-04-05",likes:620,retweets:210,replies:80,text:"村田製作所、EV向け積層セラミックコンデンサ需要増で3,200円目標"},
-    {id:"p48",date:"2025-04-10",ticker:"7735.T",company:"SCREENホールディングス",direction:"up",targetPrice:14000,predictionDate:"2025-04-10",resultDate:"2025-05-10",likes:840,retweets:300,replies:110,text:"SCREEN、洗浄装置の受注回復と脱炭素製造ラインで12,500円台は買い場。14,000円へ🌱",isLatest:true},
+    {id:"p47",date:"2026-03-05",ticker:"6981.T",company:"村田製作所",direction:"up",targetPrice:3200,predictionDate:"2026-03-05",resultDate:"2026-04-05",likes:620,retweets:210,replies:80,text:"村田製作所、EV向け積層セラミックコンデンサ需要増で3,200円目標"},
+    {id:"p48",date:"2026-04-10",ticker:"7735.T",company:"SCREENホールディングス",direction:"up",targetPrice:14000,predictionDate:"2026-04-10",resultDate:"2026-05-10",likes:840,retweets:300,replies:110,text:"SCREEN、洗浄装置の受注回復と脱炭素製造ラインで12,500円台は買い場。14,000円へ🌱",isLatest:true},
   ]},
   { id:17, handle:"@real_estate_eye", name:"不動産眼👁", avatar:"RE", avatarColor:"#0369a1", followers:8900, posts:[
-    {id:"p49",date:"2025-03-10",ticker:"8802.T",company:"三菱地所",direction:"up",targetPrice:2400,predictionDate:"2025-03-10",resultDate:"2025-04-10",likes:540,retweets:180,replies:68,text:"三菱地所、インバウンド需要＋オフィス回帰で2,400円へ"},
-    {id:"p50",date:"2025-04-18",ticker:"8830.T",company:"住友不動産",direction:"up",targetPrice:5200,predictionDate:"2025-04-18",resultDate:"2025-05-18",likes:720,retweets:240,replies:90,text:"住友不動産、都心高級マンション好調継続。4,700円台は割安水準。5,200円を中期目標に🏙️",isLatest:true},
+    {id:"p49",date:"2026-03-10",ticker:"8802.T",company:"三菱地所",direction:"up",targetPrice:2400,predictionDate:"2026-03-10",resultDate:"2026-04-10",likes:540,retweets:180,replies:68,text:"三菱地所、インバウンド需要＋オフィス回帰で2,400円へ"},
+    {id:"p50",date:"2026-04-18",ticker:"8830.T",company:"住友不動産",direction:"up",targetPrice:5200,predictionDate:"2026-04-18",resultDate:"2026-05-18",likes:720,retweets:240,replies:90,text:"住友不動産、都心高級マンション好調継続。4,700円台は割安水準。5,200円を中期目標に🏙️",isLatest:true},
   ]},
   { id:18, handle:"@fx_and_stocks", name:"FX兼業トレーダー", avatar:"FX", avatarColor:"#7e22ce", followers:7200, posts:[
-    {id:"p51",date:"2025-03-15",ticker:"8411.T",company:"みずほFG",direction:"up",targetPrice:3800,predictionDate:"2025-03-15",resultDate:"2025-04-15",likes:410,retweets:140,replies:54,text:"円安継続でみずほFG、外貨収益拡大で3,800円へ"},
-    {id:"p52",date:"2025-04-20",ticker:"6098.T",company:"リクルートHD",direction:"up",targetPrice:11000,predictionDate:"2025-04-20",resultDate:"2025-05-20",likes:880,retweets:320,replies:130,text:"リクルート、Indeed＋AIマッチング事業が急拡大。9,500円台は押し目買い。11,000円へ📊",isLatest:true},
+    {id:"p51",date:"2026-03-15",ticker:"8411.T",company:"みずほFG",direction:"up",targetPrice:3800,predictionDate:"2026-03-15",resultDate:"2026-04-15",likes:410,retweets:140,replies:54,text:"円安継続でみずほFG、外貨収益拡大で3,800円へ"},
+    {id:"p52",date:"2026-04-20",ticker:"6098.T",company:"リクルートHD",direction:"up",targetPrice:11000,predictionDate:"2026-04-20",resultDate:"2026-05-20",likes:880,retweets:320,replies:130,text:"リクルート、Indeed＋AIマッチング事業が急拡大。9,500円台は押し目買い。11,000円へ📊",isLatest:true},
   ]},
   { id:19, handle:"@tenbagger_hunter", name:"10倍株ハンター", avatar:"TH", avatarColor:"#c2410c", followers:6100, posts:[
-    {id:"p53",date:"2025-03-08",ticker:"4385.T",company:"メルカリ",direction:"up",targetPrice:3000,predictionDate:"2025-03-08",resultDate:"2025-04-08",likes:690,retweets:240,replies:98,text:"メルカリ、フィンテック拡大で3,000円超えへ"},
-    {id:"p54",date:"2025-04-22",ticker:"4565.T",company:"そーせいグループ",direction:"up",targetPrice:3200,predictionDate:"2025-04-22",resultDate:"2025-05-22",likes:760,retweets:280,replies:110,text:"そーせいグループ、欧州パートナーとの新薬提携で大化け期待。2,500円台が仕込み場🚀",isLatest:true},
+    {id:"p53",date:"2026-03-08",ticker:"4385.T",company:"メルカリ",direction:"up",targetPrice:3000,predictionDate:"2026-03-08",resultDate:"2026-04-08",likes:690,retweets:240,replies:98,text:"メルカリ、フィンテック拡大で3,000円超えへ"},
+    {id:"p54",date:"2026-04-22",ticker:"4565.T",company:"そーせいグループ",direction:"up",targetPrice:3200,predictionDate:"2026-04-22",resultDate:"2026-05-22",likes:760,retweets:280,replies:110,text:"そーせいグループ、欧州パートナーとの新薬提携で大化け期待。2,500円台が仕込み場🚀",isLatest:true},
   ]},
   { id:20, handle:"@quiet_compounder", name:"静かな複利家", avatar:"QC", avatarColor:"#334155", followers:4800, posts:[
-    {id:"p55",date:"2025-03-01",ticker:"4502.T",company:"武田薬品工業",direction:"up",targetPrice:4900,predictionDate:"2025-03-01",resultDate:"2025-04-01",likes:280,retweets:90,replies:34,text:"武田薬品、海外収益比率高く円安メリット。長期保有推奨"},
-    {id:"p56",date:"2025-04-19",ticker:"7974.T",company:"任天堂",direction:"up",targetPrice:10000,predictionDate:"2025-04-19",resultDate:"2025-05-19",likes:1240,retweets:480,replies:190,text:"任天堂、Switch2発表効果が本格化。8,500円台は長期仕込みの好機。10,000円まで待てる人向け🎮",isLatest:true},
+    {id:"p55",date:"2026-03-01",ticker:"4502.T",company:"武田薬品工業",direction:"up",targetPrice:4900,predictionDate:"2026-03-01",resultDate:"2026-04-01",likes:280,retweets:90,replies:34,text:"武田薬品、海外収益比率高く円安メリット。長期保有推奨"},
+    {id:"p56",date:"2026-04-19",ticker:"7974.T",company:"任天堂",direction:"up",targetPrice:10000,predictionDate:"2026-04-19",resultDate:"2026-05-19",likes:1240,retweets:480,replies:190,text:"任天堂、Switch2発表効果が本格化。8,500円台は長期仕込みの好機。10,000円まで待てる人向け🎮",isLatest:true},
   ]},
 ];
 
 const SIM: Record<string, Record<string, number>> = {
-  "7203.T":{"2025-02-20":2980,"2025-03-17":3050,"2025-03-31":3185},
-  "6758.T":{"2025-03-05":4520,"2025-04-05":4930},
-  "9984.T":{"2025-02-28":8900,"2025-03-18":8740,"2025-03-28":8320,"2025-04-11":8980,"2025-04-18":7820},
-  "6501.T":{"2025-02-25":9800,"2025-03-25":10620},
-  "8306.T":{"2025-03-10":1640,"2025-04-10":1890},
-  "7267.T":{"2025-03-22":1560,"2025-04-22":1390},
-  "6367.T":{"2025-02-28":22400,"2025-03-28":23100},
-  "4063.T":{"2025-03-15":5620,"2025-04-15":5980},
-  "2413.T":{"2025-04-01":1920,"2025-04-25":1740},
-  "9432.T":{"2025-03-01":175,"2025-04-01":183},
-  "6902.T":{"2025-03-20":2310,"2025-04-20":2480},
-  "8411.T":{"2025-03-03":3420,"2025-03-15":3480,"2025-04-03":3580,"2025-04-15":3720},
-  "7751.T":{"2025-03-25":4200,"2025-04-25":4380},
-  "4689.T":{"2025-02-22":460,"2025-03-22":388},
-  "6098.T":{"2025-03-12":9800,"2025-04-12":8750},
-  "6723.T":{"2025-03-08":2760,"2025-03-25":2840,"2025-04-08":2920,"2025-04-25":2880},
-  "6857.T":{"2025-02-20":6400,"2025-03-20":6980,"2025-03-28":6980,"2025-04-25":7420},
-  "5108.T":{"2025-03-05":5480,"2025-04-05":5650},
-  "7270.T":{"2025-04-05":3780,"2025-04-25":3940},
-  "9022.T":{"2025-03-15":4180,"2025-04-15":4380},
-  "4478.T":{"2025-03-18":1680,"2025-04-18":1940},
-  "8316.T":{"2025-02-18":8900,"2025-03-18":9240},
-  "4502.T":{"2025-03-01":4380,"2025-03-12":4520,"2025-04-01":4610,"2025-04-12":4690},
-  "9433.T":{"2025-02-25":4700,"2025-03-25":4880},
-  "8591.T":{"2025-03-20":3180,"2025-04-20":3310},
-  "6981.T":{"2025-03-05":2840,"2025-04-05":2980},
-  "8802.T":{"2025-03-10":2180,"2025-04-10":2320},
-  "4385.T":{"2025-03-08":2100,"2025-04-08":2350},
-  "6861.T":{"2025-03-18":67200,"2025-04-18":65800},
+  "7203.T":{"2026-01-20":2980,"2026-02-17":3050,"2026-02-31":3185},
+  "6758.T":{"2026-02-05":4520,"2026-03-05":4930},
+  "9984.T":{"2026-01-28":8900,"2026-02-18":8740,"2026-02-28":8320,"2026-03-11":8980,"2026-03-18":7820},
+  "6501.T":{"2026-01-25":9800,"2026-02-25":10620},
+  "8306.T":{"2026-02-10":1640,"2026-03-10":1890},
+  "7267.T":{"2026-02-22":1560,"2026-03-22":1390},
+  "6367.T":{"2026-01-28":22400,"2026-02-28":23100},
+  "4063.T":{"2026-02-15":5620,"2026-03-15":5980},
+  "2413.T":{"2026-03-01":1920,"2026-03-25":1740},
+  "9432.T":{"2026-02-01":175,"2026-03-01":183},
+  "6902.T":{"2026-02-20":2310,"2026-03-20":2480},
+  "8411.T":{"2026-02-03":3420,"2026-02-15":3480,"2026-03-03":3580,"2026-03-15":3720},
+  "7751.T":{"2026-02-25":4200,"2026-03-25":4380},
+  "4689.T":{"2026-01-22":460,"2026-02-22":388},
+  "6098.T":{"2026-02-12":9800,"2026-03-12":8750},
+  "6723.T":{"2026-02-08":2760,"2026-02-25":2840,"2026-03-08":2920,"2026-03-25":2880},
+  "6857.T":{"2026-01-20":6400,"2026-02-20":6980,"2026-02-28":6980,"2026-03-25":7420},
+  "5108.T":{"2026-02-05":5480,"2026-03-05":5650},
+  "7270.T":{"2026-03-05":3780,"2026-03-25":3940},
+  "9022.T":{"2026-02-15":4180,"2026-03-15":4380},
+  "4478.T":{"2026-02-18":1680,"2026-03-18":1940},
+  "8316.T":{"2026-01-18":8900,"2026-02-18":9240},
+  "4502.T":{"2026-02-01":4380,"2026-02-12":4520,"2026-03-01":4610,"2026-03-12":4690},
+  "9433.T":{"2026-01-25":4700,"2026-02-25":4880},
+  "8591.T":{"2026-02-20":3180,"2026-03-20":3310},
+  "6981.T":{"2026-02-05":2840,"2026-03-05":2980},
+  "8802.T":{"2026-02-10":2180,"2026-03-10":2320},
+  "4385.T":{"2026-02-08":2100,"2026-03-08":2350},
+  "6861.T":{"2026-02-18":67200,"2026-03-18":65800},
 };
 
 function getPriceAt(ticker: string, date: string): number | null {
@@ -202,13 +202,24 @@ function evaluatePrediction(post: Post) {
   return { result: ((e > s ? "up" : "down") === post.direction ? "hit" : "miss") as "hit"|"miss", startPrice: s, endPrice: e, changePct: ((e - s) / s * 100).toFixed(2) };
 }
 function calcHitRate(user: User) {
-  const evs = user.posts.filter(p => !p.isLatest).map(evaluatePrediction).filter(e => e.result !== "pending");
+  // 直近3ヶ月のポストのみで的中率を算出
+  const threeMonthsAgo = new Date();
+  threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
+  const evs = user.posts
+    .filter(p => !p.isLatest && new Date(p.date) >= threeMonthsAgo)
+    .map(evaluatePrediction)
+    .filter(e => e.result !== "pending");
   if (!evs.length) return null;
   const hits = evs.filter(e => e.result === "hit").length;
   return { rate: Math.round(hits / evs.length * 100), hits, total: evs.length };
 }
 function calcEngScore(user: User) {
-  return Math.round(user.posts.reduce((s, p) => s + p.likes + p.retweets * 2 + p.replies * 1.5, 0) + Math.log10(user.followers + 1) * 800);
+  // 直近3ヶ月のポストのみでスコアリング
+  const threeMonthsAgo = new Date();
+  threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
+  const recentPosts = user.posts.filter(p => new Date(p.date) >= threeMonthsAgo);
+  const posts = recentPosts.length > 0 ? recentPosts : user.posts; // フォールバック
+  return Math.round(posts.reduce((s, p) => s + p.likes + p.retweets * 2 + p.replies * 1.5, 0) + Math.log10(user.followers + 1) * 800);
 }
 
 async function analyzeLatest(user: User, hitInfo: ReturnType<typeof calcHitRate>) {
@@ -448,8 +459,10 @@ export default function App() {
             <span style={{ fontFamily: "'DM Sans',sans-serif", fontWeight: 800, fontSize: 17, color: C.text }}>KabuCheck</span>
             <span style={{ fontSize: 10, color: C.textLight, background: "#f0f0ec", padding: "2px 8px", borderRadius: 10 }}>β Demo</span>
           </div>
-          <span style={{ fontSize: 12, color: C.textLight, display: w < 520 ? "none" : "inline" }}>的中率ランキング · 20名</span>
-          <a href="/admin" style={{ fontSize: 12, color: "#fff", background: C.accent, padding: "7px 16px", borderRadius: 8, textDecoration: "none", fontWeight: 700, fontFamily: "'DM Sans',sans-serif" }}>🔄 ランキング更新</a>
+          <div style={{ display: "flex", gap: 8 }}>
+            <a href="/admin" style={{ fontSize: 12, color: C.textMid, background: "transparent", padding: "7px 14px", borderRadius: 8, textDecoration: "none", fontWeight: 600, fontFamily: "'DM Sans',sans-serif", border: `1px solid ${C.border}` }}>⚙ 管理画面</a>
+            <a href="/admin" style={{ fontSize: 12, color: "#fff", background: C.accent, padding: "7px 16px", borderRadius: 8, textDecoration: "none", fontWeight: 700, fontFamily: "'DM Sans',sans-serif" }}>🔄 ランキング更新</a>
+          </div>
         </div>
       </div>
 
