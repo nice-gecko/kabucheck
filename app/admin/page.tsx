@@ -46,14 +46,31 @@ export default function AdminPage() {
 
   useEffect(() => { loadUsers(); loadStatus(); }, []);
 
+  const [fetching, setFetching] = useState(false);
+  const [platform, setPlatform] = useState<"x"|"threads">("x");
+
+  async function handleFetchProfile() {
+    if (!handle) return;
+    setFetching(true);
+    try {
+      const res = await fetch(`/api/fetch-profile?handle=${handle.replace(/^@/,"")}&platform=${platform}`);
+      if (res.ok) {
+        const d = await res.json();
+        if (d.name) setName(d.name);
+        if (d.followers) setFollowers(String(d.followers));
+      }
+    } catch {}
+    setFetching(false);
+  }
+
   async function handleAdd() {
     if (!handle) return;
     setAdding(true);
     await fetch("/api/users", {
       method:"POST", headers:{"Content-Type":"application/json"},
-      body: JSON.stringify({ handle: handle.replace(/^@/,""), name: name||handle, followers: parseInt(followers)||0, avatarColor: color }),
+      body: JSON.stringify({ handle: handle.replace(/^@/,""), name: name||handle, followers: parseInt(followers)||0, avatarColor: color, platform }),
     });
-    setHandle(""); setName(""); setFollowers("");
+    setHandle(""); setName(""); setFollowers(""); setPlatform("x");
     await loadUsers();
     setAdding(false);
   }
@@ -157,13 +174,45 @@ export default function AdminPage() {
             {/* Add user form */}
             <div style={{background:C.card, borderRadius:14, border:`1px solid ${C.border}`, boxShadow:C.shadow, padding:"20px 24px", marginBottom:16}}>
               <h3 style={{fontFamily:"'DM Sans',sans-serif", fontWeight:700, fontSize:15, color:C.text, marginBottom:14}}>➕ 候補ユーザーを追加</h3>
-              <div style={{display:"grid", gridTemplateColumns:"1fr 1fr 120px", gap:10, marginBottom:10}}>
-                <input value={handle} onChange={e=>setHandle(e.target.value)} placeholder="@handle (必須)"
-                  style={{padding:"9px 12px", borderRadius:8, border:`1px solid ${C.border}`, fontSize:13, color:C.text, background:"#fafaf8", outline:"none"}}/>
-                <input value={name} onChange={e=>setName(e.target.value)} placeholder="表示名"
-                  style={{padding:"9px 12px", borderRadius:8, border:`1px solid ${C.border}`, fontSize:13, color:C.text, background:"#fafaf8", outline:"none"}}/>
+
+              {/* Platform selector */}
+              <div style={{display:"flex", gap:8, marginBottom:12}}>
+                {(["x","threads"] as const).map(p => (
+                  <button key={p} onClick={()=>setPlatform(p)} style={{
+                    background: platform===p ? C.accent : "transparent",
+                    color: platform===p ? "#fff" : C.textMid,
+                    border:`1px solid ${platform===p ? C.accent : C.border}`,
+                    borderRadius:8, padding:"6px 16px", fontSize:12, fontWeight:600, cursor:"pointer",
+                  }}>{p === "x" ? "𝕏 X (Twitter)" : "🧵 Threads"}</button>
+                ))}
+              </div>
+
+              {/* Handle input + auto-fetch */}
+              <div style={{display:"flex", gap:8, marginBottom:10}}>
+                <input
+                  value={handle}
+                  onChange={e => { setHandle(e.target.value); setName(""); setFollowers(""); }}
+                  onBlur={handleFetchProfile}
+                  placeholder="@handle (必須)"
+                  style={{flex:1, padding:"9px 12px", borderRadius:8, border:`1px solid ${C.border}`, fontSize:13, color:C.text, background:"#fafaf8", outline:"none"}}
+                />
+                <button onClick={handleFetchProfile} disabled={!handle||fetching} style={{
+                  background: fetching ? C.accentSoft : C.accent,
+                  color: fetching ? C.accent : "#fff",
+                  border:"none", borderRadius:8, padding:"9px 16px",
+                  fontSize:12, fontWeight:700, cursor: handle&&!fetching ? "pointer" : "default",
+                  whiteSpace:"nowrap",
+                }}>
+                  {fetching ? "取得中…" : "🔍 自動取得"}
+                </button>
+              </div>
+
+              {/* Name + followers (auto-filled) */}
+              <div style={{display:"grid", gridTemplateColumns:"1fr 160px", gap:10, marginBottom:10}}>
+                <input value={name} onChange={e=>setName(e.target.value)} placeholder="表示名（自動取得されます）"
+                  style={{padding:"9px 12px", borderRadius:8, border:`1px solid ${name ? C.green : C.border}`, fontSize:13, color:C.text, background: name ? C.greenSoft : "#fafaf8", outline:"none"}}/>
                 <input value={followers} onChange={e=>setFollowers(e.target.value)} placeholder="フォロワー数" type="number"
-                  style={{padding:"9px 12px", borderRadius:8, border:`1px solid ${C.border}`, fontSize:13, color:C.text, background:"#fafaf8", outline:"none"}}/>
+                  style={{padding:"9px 12px", borderRadius:8, border:`1px solid ${followers ? C.green : C.border}`, fontSize:13, color:C.text, background: followers ? C.greenSoft : "#fafaf8", outline:"none"}}/>
               </div>
               <div style={{display:"flex", alignItems:"center", gap:10}}>
                 <span style={{fontSize:12, color:C.textMid}}>カラー:</span>
