@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 const API_BASE = process.env.NEXT_PUBLIC_SCREENER_API_URL || 'https://screener-api-i6pi.onrender.com';
 
@@ -312,6 +312,12 @@ export default function ScreenerPage() {
     }
   }
 
+  // ページ表示時に自動でスクリーニング実行
+  useEffect(() => {
+    runScreening();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   // ソートはクライアントサイドで即時反映
   const filtered = results
     .filter(r => filterMkt === 'すべて' || r.market === filterMkt)
@@ -329,10 +335,13 @@ export default function ScreenerPage() {
       return 0;
     });
 
-  // 無料：上位5件まで表示、6件目以降はblur
+  // 無料：上位5件表示・6〜7件目をblur、プレミアム：上位20件表示
   const FREE_LIMIT = 5;
-  const visibleRows = filtered.slice(0, FREE_LIMIT);
-  const blurredRows = !isPremium ? filtered.slice(FREE_LIMIT) : [];
+  const DISPLAY_LIMIT = 7;
+  const PREMIUM_LIMIT = 20;
+  const displayResults = isPremium ? filtered.slice(0, PREMIUM_LIMIT) : filtered.slice(0, DISPLAY_LIMIT);
+  const visibleRows = displayResults.slice(0, FREE_LIMIT);
+  const blurredRows = !isPremium ? displayResults.slice(FREE_LIMIT) : [];
 
   const patterns = ['すべて', ...Array.from(new Set(results.map(r => r.pattern)))];
 
@@ -422,7 +431,7 @@ export default function ScreenerPage() {
               )}
               {loading && (
                 <div style={{ fontSize: 13, color: '#6b7280' }}>
-                  5〜10分かかります。しばらくお待ちください...
+                  約50秒かかります。しばらくお待ちください...
                 </div>
               )}
             </div>
@@ -700,7 +709,7 @@ export default function ScreenerPage() {
                       {/* プレミアム誘導バナー */}
                       <div style={premiumBannerStyle}>
                         <div style={{ fontSize: 20, fontWeight: 900, color: '#111827' }}>
-                          🔒 残り {blurredRows.length} 銘柄を解除する
+                          🔒 残りの銘柄をすべて解除する
                         </div>
                         <div style={{ fontSize: 13, color: '#6b7280', textAlign: 'center', maxWidth: 340 }}>
                           プレミアムプランで全スクリーニング結果・リアルタイム更新・CSVエクスポートが使い放題
@@ -731,7 +740,7 @@ export default function ScreenerPage() {
                 <div style={{ fontSize: 36, marginBottom: 12 }}>📊</div>
                 <div style={{ fontSize: 17, fontWeight: 600, marginBottom: 8 }}>スクリーニングを実行してください</div>
                 <div style={{ fontSize: 13 }}>「スクリーニング実行」ボタンを押すと、日米5,000銘柄を自動分析します</div>
-                <div style={{ fontSize: 11, color: '#9ca3af', marginTop: 8 }}>※ 初回は5〜10分かかります</div>
+                <div style={{ fontSize: 11, color: '#9ca3af', marginTop: 8 }}>※ 初回は約50秒かかります</div>
               </div>
             )}
           </div>
