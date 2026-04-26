@@ -72,7 +72,7 @@ export default function AdminPage() {
     const res = await fetch("/api/ranking-update", { method:"POST" });
     if (!res.ok) { setLog(l=>[...l,"❌ 更新に失敗しました"]); setUpdating(false); return; }
 
-    setLog(l=>[...l,"📡 Nitter RSSからデータ取得中..."]);
+    setLog(l=>[...l,"📡 RSSHubからX・Threadsのデータ取得中..."]);
     const poll = setInterval(async () => {
       const r = await fetch("/api/ranking-update");
       const d = await r.json();
