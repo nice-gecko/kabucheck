@@ -1,8 +1,1 @@
-{
-  "crons": [
-    {
-      "path": "/api/cron/wake-render",
-      "schedule": "*/10 * * * *"
-    }
-  ]
-}
+{"crons":[{"path":"/api/cron/wake-render","schedule":"0 9 * * *"}]}
