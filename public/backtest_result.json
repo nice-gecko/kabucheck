@@ -1,0 +1,182 @@
+{
+  "generated_at": "2026-04-26",
+  "period_start": "2024-04",
+  "period_end": "2026-03",
+  "total_trades": 4079,
+  "avg_return_pct": 0.93,
+  "win_rate": 54.0,
+  "total_return_pct": 20.0,
+  "benchmark_ticker": "SPY",
+  "benchmark_return_pct": 27.0,
+  "alpha": -7.0,
+  "curve": [
+    {
+      "date": "2024-04",
+      "portfolio": 102.58,
+      "benchmark": 100.0,
+      "trades": 38,
+      "avg_ret": 2.58
+    },
+    {
+      "date": "2024-05",
+      "portfolio": 104.14,
+      "benchmark": 103.14,
+      "trades": 202,
+      "avg_ret": 1.52
+    },
+    {
+      "date": "2024-06",
+      "portfolio": 106.77,
+      "benchmark": 106.78,
+      "trades": 168,
+      "avg_ret": 2.53
+    },
+    {
+      "date": "2024-07",
+      "portfolio": 103.86,
+      "benchmark": 104.56,
+      "trades": 217,
+      "avg_ret": -2.73
+    },
+    {
+      "date": "2024-08",
+      "portfolio": 104.53,
+      "benchmark": 110.6,
+      "trades": 159,
+      "avg_ret": 0.65
+    },
+    {
+      "date": "2024-09",
+      "portfolio": 105.75,
+      "benchmark": 112.77,
+      "trades": 236,
+      "avg_ret": 1.16
+    },
+    {
+      "date": "2024-10",
+      "portfolio": 108.65,
+      "benchmark": 112.39,
+      "trades": 215,
+      "avg_ret": 2.74
+    },
+    {
+      "date": "2024-11",
+      "portfolio": 109.14,
+      "benchmark": 118.59,
+      "trades": 219,
+      "avg_ret": 0.45
+    },
+    {
+      "date": "2024-12",
+      "portfolio": 107.85,
+      "benchmark": 116.9,
+      "trades": 201,
+      "avg_ret": -1.18
+    },
+    {
+      "date": "2025-01",
+      "portfolio": 110.62,
+      "benchmark": 118.85,
+      "trades": 131,
+      "avg_ret": 2.57
+    },
+    {
+      "date": "2025-02",
+      "portfolio": 106.33,
+      "benchmark": 117.34,
+      "trades": 153,
+      "avg_ret": -3.87
+    },
+    {
+      "date": "2025-03",
+      "portfolio": 100.72,
+      "benchmark": 100.08,
+      "trades": 104,
+      "avg_ret": -5.28
+    },
+    {
+      "date": "2025-04",
+      "portfolio": 100.78,
+      "benchmark": 112.26,
+      "trades": 51,
+      "avg_ret": 0.06
+    },
+    {
+      "date": "2025-05",
+      "portfolio": 101.19,
+      "benchmark": 116.74,
+      "trades": 78,
+      "avg_ret": 0.4
+    },
+    {
+      "date": "2025-06",
+      "portfolio": 101.91,
+      "benchmark": 124.23,
+      "trades": 138,
+      "avg_ret": 0.72
+    },
+    {
+      "date": "2025-07",
+      "portfolio": 104.58,
+      "benchmark": 123.51,
+      "trades": 137,
+      "avg_ret": 2.62
+    },
+    {
+      "date": "2025-08",
+      "portfolio": 107.94,
+      "benchmark": 128.14,
+      "trades": 196,
+      "avg_ret": 3.22
+    },
+    {
+      "date": "2025-09",
+      "portfolio": 110.19,
+      "benchmark": 133.31,
+      "trades": 233,
+      "avg_ret": 2.08
+    },
+    {
+      "date": "2025-10",
+      "portfolio": 112.53,
+      "benchmark": 135.87,
+      "trades": 185,
+      "avg_ret": 2.12
+    },
+    {
+      "date": "2025-11",
+      "portfolio": 115.04,
+      "benchmark": 136.14,
+      "trades": 214,
+      "avg_ret": 2.23
+    },
+    {
+      "date": "2025-12",
+      "portfolio": 118.93,
+      "benchmark": 136.5,
+      "trades": 243,
+      "avg_ret": 3.38
+    },
+    {
+      "date": "2026-01",
+      "portfolio": 127.39,
+      "benchmark": 138.25,
+      "trades": 221,
+      "avg_ret": 7.11
+    },
+    {
+      "date": "2026-02",
+      "portfolio": 120.72,
+      "benchmark": 137.06,
+      "trades": 245,
+      "avg_ret": -5.23
+    },
+    {
+      "date": "2026-03",
+      "portfolio": 119.99,
+      "benchmark": 127.04,
+      "trades": 95,
+      "avg_ret": -0.61
+    }
+  ]
+}

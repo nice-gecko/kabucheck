@@ -46,6 +46,28 @@ interface ApiResponse {
   results: ScreenerResult[];
 }
 
+interface BacktestCurvePoint {
+  date: string;
+  portfolio: number;
+  benchmark: number | null;
+  trades: number;
+  avg_ret: number;
+}
+
+interface BacktestResult {
+  generated_at: string;
+  period_start: string;
+  period_end: string;
+  total_trades: number;
+  avg_return_pct: number;
+  win_rate: number;
+  total_return_pct: number;
+  benchmark_ticker: string;
+  benchmark_return_pct: number;
+  alpha: number;
+  curve: BacktestCurvePoint[];
+}
+
 // ─── スタイル定数 ───────────────────────────────────────────────
 
 const card: React.CSSProperties = {
@@ -259,6 +281,273 @@ function TickerCell({ r }: { r: ScreenerResult }) {
   );
 }
 
+// ─── バックテスト グラフ ─────────────────────────────────────────
+
+function BacktestLineChart({ curve }: { curve: BacktestCurvePoint[] }) {
+  if (curve.length < 2) return null;
+
+  const W = 800, H = 280;
+  const PL = 50, PR = 20, PT = 15, PB = 45;
+  const cW = W - PL - PR;
+  const cH = H - PT - PB;
+
+  const portVals  = curve.map(d => d.portfolio);
+  const benchVals = curve.filter(d => d.benchmark != null).map(d => d.benchmark as number);
+  const allVals   = [...portVals, ...benchVals, 100];
+  const rawMin    = Math.min(...allVals);
+  const rawMax    = Math.max(...allVals);
+  const yPad      = Math.max((rawMax - rawMin) * 0.12, 4);
+  const minY      = Math.floor((rawMin - yPad) / 5) * 5;
+  const maxY      = Math.ceil((rawMax + yPad) / 5) * 5;
+  const rangeY    = maxY - minY || 1;
+
+  const xPos = (i: number) => PL + (i / (curve.length - 1)) * cW;
+  const yPos = (v: number)  => PT + cH - ((v - minY) / rangeY) * cH;
+
+  const portPathD = curve
+    .map((d, i) => `${i === 0 ? 'M' : 'L'}${xPos(i).toFixed(1)},${yPos(d.portfolio).toFixed(1)}`)
+    .join(' ');
+
+  const areaD =
+    portPathD +
+    ` L${xPos(curve.length - 1).toFixed(1)},${(PT + cH).toFixed(1)}` +
+    ` L${PL.toFixed(1)},${(PT + cH).toFixed(1)} Z`;
+
+  const benchParts: string[] = [];
+  curve.forEach((d, i) => {
+    if (d.benchmark != null) {
+      const prev = curve[i - 1];
+      const pfx  = i === 0 || prev?.benchmark == null ? 'M' : 'L';
+      benchParts.push(`${pfx}${xPos(i).toFixed(1)},${yPos(d.benchmark).toFixed(1)}`);
+    }
+  });
+
+  const yTicks  = Array.from({ length: 6 }, (_, k) => minY + (k / 5) * rangeY);
+  const xStep   = Math.max(1, Math.ceil(curve.length / 8));
+  const xLabels = curve
+    .map((d, i) => ({ i, label: d.date }))
+    .filter((_, idx) => idx % xStep === 0 || idx === curve.length - 1);
+
+  return (
+    <svg viewBox={`0 0 ${W} ${H}`} style={{ width: '100%', height: 'auto', display: 'block' }}>
+      <defs>
+        <linearGradient id="btGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#2563eb" stopOpacity={0.3} />
+          <stop offset="100%" stopColor="#2563eb" stopOpacity={0} />
+        </linearGradient>
+      </defs>
+
+      <rect x={PL} y={PT} width={cW} height={cH} fill="#f9fafb" rx={3} />
+
+      {yTicks.map(tick => (
+        <line key={tick} x1={PL} y1={yPos(tick)} x2={W - PR} y2={yPos(tick)} stroke="#e5e7eb" strokeWidth={1} />
+      ))}
+
+      {minY <= 100 && maxY >= 100 && (
+        <line x1={PL} y1={yPos(100)} x2={W - PR} y2={yPos(100)} stroke="#9ca3af" strokeWidth={1} strokeDasharray="4 3" />
+      )}
+
+      <path d={areaD} fill="url(#btGrad)" />
+
+      {benchParts.length > 0 && (
+        <path d={benchParts.join(' ')} fill="none" stroke="#d1d5db" strokeWidth={2} strokeDasharray="5 3" />
+      )}
+
+      <path d={portPathD} fill="none" stroke="#2563eb" strokeWidth={2.5} strokeLinejoin="round" strokeLinecap="round" />
+
+      {yTicks.map(tick => (
+        <text key={tick} x={PL - 5} y={yPos(tick) + 4} textAnchor="end" fontSize={10} fill="#9ca3af">
+          {tick.toFixed(0)}
+        </text>
+      ))}
+
+      {xLabels.map(({ i, label }) => (
+        <text key={i} x={xPos(i)} y={PT + cH + 14} textAnchor="middle" fontSize={9} fill="#9ca3af">
+          {label}
+        </text>
+      ))}
+    </svg>
+  );
+}
+
+function BacktestBarChart({ curve }: { curve: BacktestCurvePoint[] }) {
+  if (!curve.length) return null;
+  const maxT  = Math.max(...curve.map(d => d.trades), 1);
+  const barW  = Math.max(10, Math.floor(740 / curve.length) - 3);
+
+  return (
+    <div style={{ display: 'flex', alignItems: 'flex-end', gap: 3, height: 56, overflowX: 'auto', paddingBottom: 2 }}>
+      {curve.map((d, i) => (
+        <div
+          key={i}
+          title={`${d.date}: ${d.trades}シグナル  平均${d.avg_ret > 0 ? '+' : ''}${d.avg_ret}%`}
+          style={{
+            width: barW,
+            minWidth: barW,
+            height: `${Math.max(4, (d.trades / maxT) * 100)}%`,
+            backgroundColor: d.avg_ret >= 0 ? '#3b82f6' : '#ef4444',
+            borderRadius: '2px 2px 0 0',
+            opacity: 0.75,
+            flexShrink: 0,
+            cursor: 'default',
+          }}
+        />
+      ))}
+    </div>
+  );
+}
+
+function BacktestTab() {
+  const [btData, setBtData]     = useState<BacktestResult | null>(null);
+  const [btLoad, setBtLoad]     = useState(true);
+
+  useEffect(() => {
+    fetch('/backtest_result.json')
+      .then(r => r.json())
+      .then((d: BacktestResult) => { if (d.total_trades > 0) setBtData(d); })
+      .catch(() => {})
+      .finally(() => setBtLoad(false));
+  }, []);
+
+  if (btLoad) {
+    return (
+      <div style={{ textAlign: 'center', padding: 48, color: '#9ca3af', fontSize: 14 }}>
+        ⏳ バックテストデータ読み込み中...
+      </div>
+    );
+  }
+
+  if (!btData) {
+    return (
+      <div style={{ ...card, padding: 32, textAlign: 'center', color: '#6b7280' }}>
+        <div style={{ fontSize: 36, marginBottom: 12 }}>📊</div>
+        <div style={{ fontSize: 16, fontWeight: 700, marginBottom: 8 }}>バックテストデータがありません</div>
+        <div style={{ fontSize: 13, color: '#9ca3af', lineHeight: 1.8 }}>
+          以下のコマンドでデータを生成してください:<br />
+          <code style={{ backgroundColor: '#f3f4f6', padding: '4px 10px', borderRadius: 4, fontFamily: 'monospace', fontSize: 12 }}>
+            python backtest.py
+          </code>
+        </div>
+      </div>
+    );
+  }
+
+  const pos = btData.total_return_pct >= 0;
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+
+      {/* ヒーロー */}
+      <div style={{
+        borderRadius: 12,
+        background: 'linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%)',
+        padding: '28px 32px',
+        color: '#fff',
+      }}>
+        <div style={{ fontSize: 11, color: '#64748b', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 10 }}>
+          {btData.period_start} 〜 {btData.period_end} のスクリーナー成績（{btData.total_trades.toLocaleString()}トレード）
+        </div>
+        <div style={{ display: 'flex', alignItems: 'flex-end', gap: 32, flexWrap: 'wrap' }}>
+          <div>
+            <div style={{ fontSize: 11, color: '#94a3b8', marginBottom: 4 }}>スクリーナー戦略 仮想リターン</div>
+            <div style={{
+              fontSize: 72,
+              fontWeight: 900,
+              fontFamily: 'monospace',
+              lineHeight: 1,
+              color: pos ? '#4ade80' : '#f87171',
+              letterSpacing: '-2px',
+            }}>
+              {pos ? '+' : ''}{btData.total_return_pct}%
+            </div>
+            <div style={{ fontSize: 12, color: '#64748b', marginTop: 6 }}>
+              スコア60点以上を4週間保有・均等投資で仮定した場合※
+            </div>
+          </div>
+          <div style={{ display: 'flex', gap: 28, flexWrap: 'wrap' }}>
+            <div>
+              <div style={{ fontSize: 11, color: '#64748b', marginBottom: 4 }}>S&P500（同期間）</div>
+              <div style={{ fontSize: 28, fontWeight: 800, fontFamily: 'monospace', color: '#94a3b8' }}>
+                {btData.benchmark_return_pct >= 0 ? '+' : ''}{btData.benchmark_return_pct}%
+              </div>
+            </div>
+            <div>
+              <div style={{ fontSize: 11, color: '#64748b', marginBottom: 4 }}>超過リターン（α）</div>
+              <div style={{
+                fontSize: 28,
+                fontWeight: 800,
+                fontFamily: 'monospace',
+                color: btData.alpha >= 0 ? '#4ade80' : '#f87171',
+              }}>
+                {btData.alpha >= 0 ? '+' : ''}{btData.alpha}%
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* ポートフォリオ推移グラフ */}
+      <div style={{ ...card, padding: '20px 20px 12px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10, flexWrap: 'wrap', gap: 8 }}>
+          <div style={{ fontSize: 13, fontWeight: 700, color: '#111827' }}>ポートフォリオ推移（初期値 100）</div>
+          <div style={{ display: 'flex', gap: 16, fontSize: 11, color: '#6b7280' }}>
+            <span style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
+              <span style={{ display: 'inline-block', width: 22, height: 3, backgroundColor: '#2563eb', borderRadius: 2 }} />
+              スクリーナー戦略
+            </span>
+            <span style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
+              <span style={{ display: 'inline-block', width: 22, height: 2, backgroundColor: '#d1d5db', borderRadius: 2, borderTop: '2px dashed #d1d5db' }} />
+              S&P500
+            </span>
+          </div>
+        </div>
+        <BacktestLineChart curve={btData.curve} />
+        <div style={{ fontSize: 10, color: '#9ca3af', marginTop: 6, textAlign: 'right' }}>
+          ── 100ライン（元本）
+        </div>
+      </div>
+
+      {/* 統計カード */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: 12 }}>
+        {([
+          ['総シグナル数', `${btData.total_trades.toLocaleString()}回`, '#111827'],
+          ['勝率', `${btData.win_rate}%`, btData.win_rate >= 55 ? '#16a34a' : btData.win_rate >= 50 ? '#ca8a04' : '#ef4444'],
+          ['平均リターン/トレード', `${btData.avg_return_pct >= 0 ? '+' : ''}${btData.avg_return_pct}%`, btData.avg_return_pct >= 0 ? '#16a34a' : '#ef4444'],
+          ['超過リターン(α)', `${btData.alpha >= 0 ? '+' : ''}${btData.alpha}%`, btData.alpha >= 0 ? '#16a34a' : '#ef4444'],
+        ] as [string, string, string][]).map(([label, val, color]) => (
+          <div key={label} style={{ ...card, padding: 16 }}>
+            <div style={{ fontSize: 11, color: '#9ca3af', marginBottom: 6 }}>{label}</div>
+            <div style={{ fontSize: 20, fontWeight: 900, fontFamily: 'monospace', color }}>{val}</div>
+          </div>
+        ))}
+      </div>
+
+      {/* 月次シグナル数バーチャート */}
+      <div style={{ ...card, padding: '16px 20px' }}>
+        <div style={{ fontSize: 12, fontWeight: 700, color: '#111827', marginBottom: 10 }}>
+          月次シグナル数（青=平均+リターン / 赤=平均−リターン）
+        </div>
+        <BacktestBarChart curve={btData.curve} />
+      </div>
+
+      {/* 注意書き */}
+      <div style={{
+        backgroundColor: '#fffbeb',
+        border: '1px solid #fde68a',
+        borderRadius: 8,
+        padding: 12,
+        fontSize: 11,
+        color: '#b45309',
+        lineHeight: 1.7,
+      }}>
+        ※ バックテストは過去データに基づく仮説的なシミュレーションです。スコア60点以上でシグナル発生、各シグナルに均等投資、4週間後に全売却と仮定。
+        取引コスト・スリッページ・税金は考慮していません。過去の実績は将来の利益を保証しません。データ更新日: {btData.generated_at}
+      </div>
+
+    </div>
+  );
+}
+
 // ─── メインコンポーネント ────────────────────────────────────────
 
 export default function ScreenerPage() {
@@ -267,7 +556,7 @@ export default function ScreenerPage() {
   const [error, setError] = useState('');
   const [updatedAt, setUpdatedAt] = useState('');
   const [isPremium, setIsPremium] = useState(false);
-  const [activeTab, setActiveTab] = useState<'screen' | 'analyze'>('screen');
+  const [activeTab, setActiveTab] = useState<'screen' | 'analyze' | 'backtest'>('screen');
   const [filterMkt, setFilterMkt] = useState('すべて');
   const [filterPat, setFilterPat] = useState('すべて');
   const [sortBy, setSortBy] = useState('score');
@@ -374,7 +663,7 @@ export default function ScreenerPage() {
 
         {/* タブ */}
         <div style={{ display: 'flex', borderBottom: '2px solid #e5e7eb', marginBottom: 24 }}>
-          {(['screen', 'analyze'] as const).map(tab => (
+          {(['screen', 'analyze', 'backtest'] as const).map(tab => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
@@ -388,9 +677,10 @@ export default function ScreenerPage() {
                 marginBottom: -2,
                 color: activeTab === tab ? '#2563eb' : '#6b7280',
                 cursor: 'pointer',
+                fontFamily: 'inherit',
               }}
             >
-              {tab === 'screen' ? '📊 スクリーニング結果' : '🔍 個別銘柄 詳細分析'}
+              {tab === 'screen' ? '📊 スクリーニング結果' : tab === 'analyze' ? '🔍 個別銘柄 詳細分析' : '📈 バックテスト実績'}
             </button>
           ))}
         </div>
@@ -912,6 +1202,9 @@ export default function ScreenerPage() {
             )}
           </div>
         )}
+
+        {/* ─── バックテストタブ ─── */}
+        {activeTab === 'backtest' && <BacktestTab />}
 
         {/* 免責事項 */}
         <div style={{ marginTop: 32, fontSize: 11, color: '#9ca3af', textAlign: 'center' }}>
