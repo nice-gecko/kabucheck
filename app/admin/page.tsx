@@ -211,7 +211,7 @@ export default function AdminPage() {
               <div style={{display:"grid", gridTemplateColumns:"1fr 160px", gap:10, marginBottom:10}}>
                 <input value={name} onChange={e=>setName(e.target.value)} placeholder="表示名（自動取得されます）"
                   style={{padding:"9px 12px", borderRadius:8, border:`1px solid ${name ? C.green : C.border}`, fontSize:13, color:C.text, background: name ? C.greenSoft : "#fafaf8", outline:"none"}}/>
-                <input value={followers} onChange={e=>setFollowers(e.target.value)} placeholder="フォロワー数" type="number"
+                <input value={followers} onChange={e=>setFollowers(e.target.value)} placeholder="フォロワー数（手動入力）" type="number"
                   style={{padding:"9px 12px", borderRadius:8, border:`1px solid ${followers ? C.green : C.border}`, fontSize:13, color:C.text, background: followers ? C.greenSoft : "#fafaf8", outline:"none"}}/>
               </div>
               <div style={{display:"flex", alignItems:"center", gap:10}}>
