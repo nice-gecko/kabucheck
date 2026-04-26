@@ -46,6 +46,57 @@ interface ApiResponse {
   results: ScreenerResult[];
 }
 
+// ─── スタイル定数 ───────────────────────────────────────────────
+
+const card: React.CSSProperties = {
+  backgroundColor: '#fff',
+  border: '1px solid #e5e7eb',
+  borderRadius: 12,
+  boxShadow: '0 1px 3px rgba(0,0,0,0.07)',
+};
+
+const premiumOverlayOuter: React.CSSProperties = {
+  position: 'relative',
+  marginTop: 0,
+};
+
+const blurredRowStyle: React.CSSProperties = {
+  filter: 'blur(5px)',
+  userSelect: 'none',
+  pointerEvents: 'none',
+};
+
+const premiumBannerStyle: React.CSSProperties = {
+  position: 'absolute',
+  top: 0,
+  left: 0,
+  right: 0,
+  bottom: 0,
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  justifyContent: 'center',
+  background: 'linear-gradient(to bottom, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0.97) 40%)',
+  zIndex: 10,
+  gap: 12,
+};
+
+const premiumButtonStyle: React.CSSProperties = {
+  backgroundColor: '#2563eb',
+  color: '#fff',
+  fontWeight: 700,
+  padding: '12px 28px',
+  borderRadius: 8,
+  border: 'none',
+  cursor: 'pointer',
+  fontSize: 14,
+  fontFamily: 'inherit',
+  textDecoration: 'none',
+  display: 'inline-block',
+};
+
+// ─── ユーティリティ関数 ──────────────────────────────────────────
+
 function fmtPrice(r: ScreenerResult) {
   return r.currency === 'JPY'
     ? `¥${r.price.toLocaleString()}`
@@ -64,6 +115,151 @@ function getRakutenUrl(r: ScreenerResult) {
   }
   return `https://www.rakuten-sec.co.jp/web/market/search/ipmenu_us_stock.html?ID=${r.ticker}`;
 }
+
+// ─── スコア「？」ツールチップ コンポーネント ───────────────────
+
+function ScoreTooltip() {
+  const [visible, setVisible] = useState(false);
+
+  return (
+    <span
+      style={{ position: 'relative', display: 'inline-flex', alignItems: 'center' }}
+      onMouseEnter={() => setVisible(true)}
+      onMouseLeave={() => setVisible(false)}
+    >
+      <span style={{
+        display: 'inline-flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: 15,
+        height: 15,
+        borderRadius: '50%',
+        border: '1px solid #9ca3af',
+        color: '#9ca3af',
+        fontSize: 10,
+        fontWeight: 700,
+        cursor: 'default',
+        lineHeight: 1,
+        flexShrink: 0,
+      }}>?</span>
+      {visible && (
+        <span style={{
+          position: 'absolute',
+          bottom: '110%',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          backgroundColor: '#1e293b',
+          color: '#f1f5f9',
+          fontSize: 11,
+          borderRadius: 6,
+          padding: '6px 10px',
+          whiteSpace: 'nowrap',
+          zIndex: 100,
+          boxShadow: '0 4px 12px rgba(0,0,0,0.25)',
+          pointerEvents: 'none',
+        }}>
+          モメンタム・ボラティリティ・財務健全性を<br />独自ロジックで数値化（満点100）
+          <span style={{
+            position: 'absolute',
+            top: '100%',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            borderWidth: 5,
+            borderStyle: 'solid',
+            borderColor: '#1e293b transparent transparent transparent',
+          }} />
+        </span>
+      )}
+    </span>
+  );
+}
+
+// ─── 銘柄名ホバーUI コンポーネント ──────────────────────────────
+
+function TickerCell({ r }: { r: ScreenerResult }) {
+  const [hovered, setHovered] = useState(false);
+
+  const chartUrl = r.market === '東証'
+    ? `https://finance.yahoo.co.jp/quote/${r.ticker.replace('.T', '')}.T/chart`
+    : `https://finance.yahoo.com/chart/${r.ticker}`;
+
+  return (
+    <td style={{ padding: '12px 16px', position: 'relative' }}>
+      <div
+        onMouseEnter={() => setHovered(true)}
+        onMouseLeave={() => setHovered(false)}
+        style={{ display: 'inline-block', cursor: 'default' }}
+      >
+        <div style={{ fontWeight: 700, color: '#111827' }}>
+          {r.flag} {r.name}
+        </div>
+        <div style={{ fontSize: 11, color: '#2563eb', fontFamily: 'monospace' }}>{r.ticker}</div>
+        <div style={{ fontSize: 11, color: '#9ca3af' }}>🏭 {r.sector}</div>
+
+        {hovered && (
+          <div style={{
+            position: 'absolute',
+            top: '100%',
+            left: 0,
+            zIndex: 50,
+            backgroundColor: '#fff',
+            border: '1px solid #e5e7eb',
+            borderRadius: 10,
+            boxShadow: '0 8px 24px rgba(0,0,0,0.14)',
+            padding: 14,
+            minWidth: 220,
+            pointerEvents: 'auto',
+          }}>
+            <div style={{ fontSize: 12, fontWeight: 700, color: '#111827', marginBottom: 8 }}>
+              {r.flag} {r.name}
+            </div>
+            <div style={{ display: 'flex', gap: 8, flexDirection: 'column', fontSize: 12 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', color: '#6b7280' }}>
+                <span>現在値</span>
+                <span style={{ fontFamily: 'monospace', fontWeight: 700, color: '#111827' }}>{fmtPrice(r)}</span>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', color: '#6b7280' }}>
+                <span>52W高値比</span>
+                <span style={{ fontFamily: 'monospace', fontWeight: 700, color: r.pullback === 0 ? '#16a34a' : '#ca8a04' }}>
+                  {r.pullback === 0 ? 'AT HIGH' : `-${r.pullback}%`}
+                </span>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', color: '#6b7280' }}>
+                <span>RSI(14)</span>
+                <span style={{ fontFamily: 'monospace', fontWeight: 700, color: '#111827' }}>{r.rsi}</span>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', color: '#6b7280' }}>
+                <span>週足トレンド</span>
+                <span style={{ fontWeight: 700, color: r.weekly_trend === '上昇' ? '#16a34a' : '#ef4444' }}>{r.weekly_trend}</span>
+              </div>
+            </div>
+            <a
+              href={chartUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                display: 'block',
+                marginTop: 10,
+                textAlign: 'center',
+                backgroundColor: '#2563eb',
+                color: '#fff',
+                fontSize: 11,
+                fontWeight: 700,
+                padding: '6px 0',
+                borderRadius: 6,
+                textDecoration: 'none',
+              }}
+            >
+              📈 チャートを確認する →
+            </a>
+          </div>
+        )}
+      </div>
+    </td>
+  );
+}
+
+// ─── メインコンポーネント ────────────────────────────────────────
 
 export default function ScreenerPage() {
   const [results, setResults] = useState<ScreenerResult[]>([]);
@@ -116,10 +312,12 @@ export default function ScreenerPage() {
     }
   }
 
+  // ソートはクライアントサイドで即時反映
   const filtered = results
     .filter(r => filterMkt === 'すべて' || r.market === filterMkt)
     .filter(r => filterPat === 'すべて' || r.pattern === filterPat)
-    .filter(r => !searchQ ||
+    .filter(r =>
+      !searchQ ||
       r.ticker.toLowerCase().includes(searchQ.toLowerCase()) ||
       r.name.toLowerCase().includes(searchQ.toLowerCase())
     )
@@ -131,14 +329,12 @@ export default function ScreenerPage() {
       return 0;
     });
 
-  const patterns = ['すべて', ...Array.from(new Set(results.map(r => r.pattern)))];
+  // 無料：上位5件まで表示、6件目以降はblur
+  const FREE_LIMIT = 5;
+  const visibleRows = filtered.slice(0, FREE_LIMIT);
+  const blurredRows = !isPremium ? filtered.slice(FREE_LIMIT) : [];
 
-  const card: React.CSSProperties = {
-    backgroundColor: '#fff',
-    border: '1px solid #e5e7eb',
-    borderRadius: 12,
-    boxShadow: '0 1px 3px rgba(0,0,0,0.07)',
-  };
+  const patterns = ['すべて', ...Array.from(new Set(results.map(r => r.pattern)))];
 
   return (
     <div style={{ minHeight: '100vh', backgroundColor: '#f9fafb', fontFamily: "'Noto Sans JP', sans-serif", color: '#111827' }}>
@@ -311,6 +507,7 @@ export default function ScreenerPage() {
                           }}>{p}</button>
                       ))}
                     </div>
+                    {/* ソート選択：onChange で useState が即時更新 → filtered が再計算 */}
                     <select
                       value={sortBy}
                       onChange={e => setSortBy(e.target.value)}
@@ -336,7 +533,7 @@ export default function ScreenerPage() {
 
                 <div style={{ fontSize: 11, color: '#6b7280', marginBottom: 8, fontFamily: 'monospace' }}>{filtered.length} 銘柄表示中</div>
 
-                {/* テーブル */}
+                {/* ─── テーブル（blur構造） ─── */}
                 <div style={{ ...card, overflowX: 'auto' }}>
                   <table style={{ width: '100%', fontSize: 13, minWidth: 1000, borderCollapse: 'collapse' }}>
                     <thead>
@@ -356,18 +553,15 @@ export default function ScreenerPage() {
                       </tr>
                     </thead>
                     <tbody>
-                      {filtered.map(r => (
+                      {/* 無料枠：通常表示（TickerCell でホバーUI付き） */}
+                      {visibleRows.map(r => (
                         <tr
                           key={r.ticker}
                           style={{ borderBottom: '1px solid #f3f4f6' }}
                           onMouseEnter={e => (e.currentTarget.style.backgroundColor = '#eff6ff')}
                           onMouseLeave={e => (e.currentTarget.style.backgroundColor = 'transparent')}
                         >
-                          <td style={{ padding: '12px 16px' }}>
-                            <div style={{ fontWeight: 700, color: '#111827' }}>{r.flag} {r.name}</div>
-                            <div style={{ fontSize: 11, color: '#2563eb', fontFamily: 'monospace' }}>{r.ticker}</div>
-                            <div style={{ fontSize: 11, color: '#9ca3af' }}>🏭 {r.sector}</div>
-                          </td>
+                          <TickerCell r={r} />
                           <td style={{ padding: '12px 16px' }}>
                             <span style={{
                               fontSize: 11,
@@ -392,13 +586,15 @@ export default function ScreenerPage() {
                             </span>
                           </td>
                           <td style={{ padding: '12px 16px' }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                            {/* スコア表示 ＋ ？ツールチップ */}
+                            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
                               <span style={{
                                 fontWeight: 900,
                                 fontFamily: 'monospace',
                                 fontSize: 13,
                                 color: r.score >= 80 ? '#9333ea' : r.score >= 65 ? '#2563eb' : '#6b7280',
                               }}>{r.score}</span>
+                              <ScoreTooltip />
                               <div style={{ height: 6, backgroundColor: '#e5e7eb', borderRadius: 3, flex: 1, minWidth: 40 }}>
                                 <div style={{
                                   height: 6,
@@ -473,6 +669,54 @@ export default function ScreenerPage() {
                       ))}
                     </tbody>
                   </table>
+
+                  {/* ─── blur + プレミアムバナー（6位以降） ─── */}
+                  {blurredRows.length > 0 && (
+                    <div style={premiumOverlayOuter}>
+                      {/* blurされたダミー行 */}
+                      <table style={{ width: '100%', fontSize: 13, minWidth: 1000, borderCollapse: 'collapse' }}>
+                        <tbody>
+                          {blurredRows.map(r => (
+                            <tr key={r.ticker} style={{ ...blurredRowStyle, borderBottom: '1px solid #f3f4f6' }}>
+                              <td style={{ padding: '12px 16px' }}>
+                                <div style={{ fontWeight: 700 }}>{r.flag} {r.name}</div>
+                                <div style={{ fontSize: 11, fontFamily: 'monospace' }}>{r.ticker}</div>
+                                <div style={{ fontSize: 11 }}>🏭 {r.sector}</div>
+                              </td>
+                              <td style={{ padding: '12px 16px' }}>{r.market}</td>
+                              <td style={{ padding: '12px 16px' }}>{r.pattern}</td>
+                              <td style={{ padding: '12px 16px', fontFamily: 'monospace', fontWeight: 900 }}>{r.score}</td>
+                              <td style={{ padding: '12px 16px', fontFamily: 'monospace', fontWeight: 700 }}>{fmtPrice(r)}</td>
+                              <td style={{ padding: '12px 16px' }}>{r.pullback === 0 ? 'AT HIGH' : `-${r.pullback}%`}</td>
+                              <td style={{ padding: '12px 16px' }}>{r.rsi}</td>
+                              <td style={{ padding: '12px 16px' }}>×{r.vol_5d}</td>
+                              <td style={{ padding: '12px 16px' }}>{r.per ? `PER ${r.per}倍` : '—'}</td>
+                              <td style={{ padding: '12px 16px' }}>楽天</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+
+                      {/* プレミアム誘導バナー */}
+                      <div style={premiumBannerStyle}>
+                        <div style={{ fontSize: 20, fontWeight: 900, color: '#111827' }}>
+                          🔒 残り {blurredRows.length} 銘柄を解除する
+                        </div>
+                        <div style={{ fontSize: 13, color: '#6b7280', textAlign: 'center', maxWidth: 340 }}>
+                          プレミアムプランで全スクリーニング結果・リアルタイム更新・CSVエクスポートが使い放題
+                        </div>
+                        <a
+                          href="https://buy.stripe.com/placeholder"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          style={premiumButtonStyle}
+                        >
+                          💎 プレミアムプランを見る（¥980/月）
+                        </a>
+                        <div style={{ fontSize: 11, color: '#9ca3af' }}>いつでもキャンセル可能</div>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </>
             )}
@@ -611,6 +855,7 @@ export default function ScreenerPage() {
                       fontFamily: 'monospace',
                       color: analyzeResult.score >= 80 ? '#9333ea' : analyzeResult.score >= 60 ? '#2563eb' : '#6b7280',
                     }}>{analyzeResult.score}</span>
+                    <ScoreTooltip />
                     <div style={{ flex: 1 }}>
                       <div style={{ height: 12, backgroundColor: '#e5e7eb', borderRadius: 6 }}>
                         <div style={{
